@@ -1,16 +1,14 @@
 #!/bin/bash
-
-# AshaCare Simple Deployment Script
-# Run this on your Ubuntu EC2 instance
+# AshaCare Deployment Script for Amazon Linux 2023
 
 set -e # Exit on error
 
-echo "🚀 Starting Deployment..."
+echo "🚀 Starting Deployment on Amazon Linux 2023..."
 
 # 1. Update System
 echo "📦 Updating system packages..."
-sudo apt-get update -y
-sudo apt-get install -y python3-pip python3-venv
+sudo dnf update -y
+sudo dnf install -y python3 python3-pip git
 
 # 2. Setup Python Environment
 echo "🐍 Setting up Python environment..."
@@ -25,19 +23,19 @@ source venv/bin/activate
 # 3. Install Dependencies
 echo "📥 Installing dependencies..."
 if [ -f "backend/requirements.txt" ]; then
-    pip install -r backend/requirements.txt
+    pip3 install -r backend/requirements.txt
 else
     echo "⚠️ backend/requirements.txt not found! Installing flask manually..."
-    pip install flask flask-cors flask-jwt-extended
+    pip3 install flask flask-cors flask-jwt-extended
 fi
 
 # Install gunicorn for production server
-pip install gunicorn
+pip3 install gunicorn
 
 # 4. Create Systemd Service
 echo "⚙️ Configuring systemd service..."
 
-# Get current directory
+# Get current directory and user
 APP_DIR=$(pwd)
 USER_NAME=$(whoami)
 
@@ -72,8 +70,17 @@ SERVICE_STATUS=$(sudo systemctl is-active ashacare)
 
 if [ "$SERVICE_STATUS" = "active" ]; then
     echo "✅ Deployment Successful!"
-    echo "🌍 App is running at: http://$(curl -s ifconfig.me):5000"
+    
+    # Try to get public IP using IMDSv2 (Amazon standard) or fallback
+    TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" 2>/dev/null`
+    if [ -n "$TOKEN" ]; then
+        PUBLIC_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/public-ipv4)
+    else
+        PUBLIC_IP=$(curl -s ifconfig.me)
+    fi
+    
+    echo "🌍 App is running at: http://$PUBLIC_IP:5000"
 else
-    echo "❌ Service failed to start. Check logs with: sudo journalctl -u ashacare"
+    echo "❌ Service failed to start. Check logs with: sudo journalctl -u ashacare -n 50"
     exit 1
 fi
