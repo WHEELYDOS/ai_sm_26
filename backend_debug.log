@@ -1,0 +1,40 @@
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 494-228-107
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 494-228-107
+INFO:werkzeug: * Detected change in 'C:\\E\\ai_summit\\AshaCarePackage\\backend\\app.py', reloading
+INFO:werkzeug: * Detected change in 'C:\\E\\ai_summit\\AshaCarePackage\\backend\\app.py', reloading
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 494-228-107
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 494-228-107
+INFO:werkzeug:127.0.0.1 - - [25/Jan/2026 03:20:08] "POST /api/auth/login HTTP/1.1" 200 -
+ERROR:root:Invalid Token Error: Subject must be a string
+ERROR:root:Headers: Host: 127.0.0.1:5000
+User-Agent: python-requests/2.32.5
+Accept-Encoding: gzip, deflate, zstd
+Accept: */*
+Connection: keep-alive
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2OTI5MTQwOCwianRpIjoiZGNjOGUxOTItNDdkMi00MjYyLWE0YzctYmVmZjllMDdiZWZiIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MiwibmJmIjoxNzY5MjkxNDA4LCJjc3JmIjoiMjYwMjQxMmQtOWI5My00MDliLTg4NWEtMmY0ZTRlMTc4N2VlIiwiZXhwIjoxNzY5ODk2MjA4fQ.aCm6sAnUDwY7udaCC93XyCbHsqp2vwNeGnUocyPCMiE
+
+
+INFO:werkzeug:127.0.0.1 - - [25/Jan/2026 03:20:08] "[31m[1mGET /api/sync/latest HTTP/1.1[0m" 401 -
+INFO:werkzeug: * Detected change in 'C:\\E\\ai_summit\\AshaCarePackage\\backend\\routes\\auth.py', reloading
+INFO:werkzeug: * Detected change in 'C:\\E\\ai_summit\\AshaCarePackage\\backend\\routes\\auth.py', reloading
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 494-228-107
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 494-228-107
+INFO:werkzeug:127.0.0.1 - - [25/Jan/2026 03:21:01] "POST /api/auth/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/Jan/2026 03:21:02] "GET /api/sync/latest HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/Jan/2026 03:21:03] "[36mGET /sw.js HTTP/1.1[0m" 304 -
+INFO:werkzeug: * Detected change in 'C:\\E\\ai_summit\\AshaCarePackage\\backend\\routes\\sync.py', reloading
+INFO:werkzeug: * Detected change in 'C:\\E\\ai_summit\\AshaCarePackage\\backend\\routes\\sync.py', reloading
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 494-228-107
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 494-228-107
+INFO:werkzeug:127.0.0.1 - - [25/Jan/2026 03:21:20] "POST /api/auth/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/Jan/2026 03:21:20] "GET /api/sync/latest HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in 'C:\\E\\ai_summit\\AshaCarePackage\\backend\\app.py', reloading
+INFO:werkzeug: * Detected change in 'C:\\E\\ai_summit\\AshaCarePackage\\backend\\app.py', reloading

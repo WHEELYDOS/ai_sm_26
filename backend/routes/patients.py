@@ -14,7 +14,7 @@ patients_bp = Blueprint('patients', __name__, url_prefix='/api/patients')
 def get_patients():
     """Get all patients with search, sort, and filter"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Build query
         query = Patient.query.filter_by(created_by=user_id)
@@ -83,7 +83,7 @@ def get_patients():
 def create_patient():
     """Create a new patient"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         data = request.get_json()
         
         # Validate required fields
@@ -134,7 +134,7 @@ def create_patient():
 def get_patient(patient_id):
     """Get patient details with records and reminders"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         patient = Patient.query.filter_by(id=patient_id, created_by=user_id).first()
         
         if not patient:
@@ -172,7 +172,7 @@ def get_patient(patient_id):
 def update_patient(patient_id):
     """Update patient information"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         patient = Patient.query.filter_by(id=patient_id, created_by=user_id).first()
         
         if not patient:
@@ -213,7 +213,7 @@ def update_patient(patient_id):
 def delete_patient(patient_id):
     """Delete patient and associated records"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         patient = Patient.query.filter_by(id=patient_id, created_by=user_id).first()
         
         if not patient:

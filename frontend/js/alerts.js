@@ -180,7 +180,7 @@ const alertsModule = {
                         <span class="alert-severity">${alert.severity}</span>
                     </div>
                     <p class="alert-message">${alert.message}</p>
-                    <p class="alert-recommendation">💡 ${alert.recommendation}</p>
+                    <p class="alert-recommendation">Recommendation: ${alert.recommendation}</p>
                 </div>
             `;
         }

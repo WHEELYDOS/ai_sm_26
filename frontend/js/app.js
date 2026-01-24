@@ -463,9 +463,9 @@ const app = {
                             <span class="patient-uid">${patient.patientUid || 'Local'}</span>
                         </div>
                         <div class="patient-card-body">
-                            <p>👤 ${patient.age} years, ${patient.gender}</p>
-                            ${patient.contact ? `<p>📱 ${patient.contact}</p>` : ''}
-                            ${patient.pregnancyStatus ? '<p>🤰 Pregnant</p>' : ''}
+                            <p>Age: ${patient.age}, ${patient.gender}</p>
+                            ${patient.contact ? `<p>Tel: ${patient.contact}</p>` : ''}
+                            ${patient.pregnancyStatus ? '<p>Pregnant</p>' : ''}
                         </div>
                         <span class="patient-risk-badge risk-${riskLevel}">${riskLevel} risk</span>
                     </div>
@@ -500,9 +500,9 @@ const app = {
             const records = await db.getPatientRecords(patientId);
 
             // Update modal content
-            document.getElementById('modal-patient-name').textContent = 
+            document.getElementById('modal-patient-name').textContent =
                 `${patient.firstName} ${patient.lastName}`;
-            document.getElementById('modal-patient-uid').textContent = 
+            document.getElementById('modal-patient-uid').textContent =
                 patient.patientUid || `Local ID: ${patient.localId}`;
 
             // Patient info
@@ -534,7 +534,7 @@ const app = {
                     <div class="alert-card severity-${alert.severity}">
                         <span class="alert-severity">${alert.severity}</span>
                         <p>${alert.message}</p>
-                        <small>💡 ${alert.recommendation}</small>
+                        <small>Recommendation: ${alert.recommendation}</small>
                     </div>
                 `).join('');
             } else {
@@ -658,7 +658,7 @@ const app = {
                 // Populate patient dropdown
                 const patients = await db.getAllPatients();
                 const select = document.getElementById('reminder-patient');
-                select.innerHTML = patients.map(p => 
+                select.innerHTML = patients.map(p =>
                     `<option value="${p.localId}">${p.firstName} ${p.lastName}</option>`
                 ).join('');
 

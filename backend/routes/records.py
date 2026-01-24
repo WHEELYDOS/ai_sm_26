@@ -14,7 +14,7 @@ records_bp = Blueprint('records', __name__, url_prefix='/api/records')
 def create_record():
     """Create a new medical record"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         data = request.get_json()
         
         # Validate patient exists
@@ -83,7 +83,7 @@ def create_record():
 def get_patient_records(patient_id):
     """Get all records for a patient"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Verify patient belongs to user
         patient = Patient.query.filter_by(id=patient_id, created_by=user_id).first()
@@ -108,7 +108,7 @@ def get_patient_records(patient_id):
 def get_record(record_id):
     """Get a specific record"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         record = MedicalRecord.query.filter_by(id=record_id, created_by=user_id).first()
         
         if not record:
@@ -125,7 +125,7 @@ def get_record(record_id):
 def update_record(record_id):
     """Update a medical record"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         record = MedicalRecord.query.filter_by(id=record_id, created_by=user_id).first()
         
         if not record:
@@ -174,7 +174,7 @@ def update_record(record_id):
 def delete_record(record_id):
     """Delete a medical record"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         record = MedicalRecord.query.filter_by(id=record_id, created_by=user_id).first()
         
         if not record:
@@ -195,7 +195,7 @@ def delete_record(record_id):
 def get_all_alerts():
     """Get all alerts across all patients"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Get recent records for user's patients
         records = db.session.query(MedicalRecord).join(Patient).filter(

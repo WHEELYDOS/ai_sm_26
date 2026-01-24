@@ -25,7 +25,6 @@
     <header class="header">
         <div class="header-content">
             <div class="header-left">
-                <span class="header-logo">🏥</span>
                 <h1 id="app-title">AshaCare</h1>
             </div>
             <div class="header-controls">
@@ -37,7 +36,7 @@
 
                 <!-- Sync Button -->
                 <button id="sync-btn" class="sync-btn" title="Sync data">
-                    <span class="sync-icon">🔄</span>
+                    <span class="sync-icon">Sync</span>
                     <span id="sync-count" class="sync-count" style="display:none;">0</span>
                 </button>
 
@@ -57,7 +56,7 @@
                             <span id="user-email">user@email.com</span>
                         </div>
                         <hr>
-                        <button id="logout-btn" class="dropdown-item">🚪 Logout</button>
+                        <button id="logout-btn" class="dropdown-item">Logout</button>
                     </div>
                 </div>
             </div>
@@ -67,23 +66,18 @@
     <!-- Navigation Tabs -->
     <nav class="tabs-container">
         <button class="tab-button active" data-tab="dashboard">
-            <span class="tab-icon">📊</span>
             <span class="tab-label" data-i18n="dashboard">Dashboard</span>
         </button>
         <button class="tab-button" data-tab="form">
-            <span class="tab-icon">📝</span>
             <span class="tab-label" data-i18n="new_record">New Record</span>
         </button>
         <button class="tab-button" data-tab="patients">
-            <span class="tab-icon">👥</span>
             <span class="tab-label" data-i18n="patients">Patients</span>
         </button>
         <button class="tab-button" data-tab="alerts">
-            <span class="tab-icon">⚠️</span>
             <span class="tab-label" data-i18n="alerts">Alerts</span>
         </button>
         <button class="tab-button" data-tab="reminders">
-            <span class="tab-icon">⏰</span>
             <span class="tab-label" data-i18n="reminders">Reminders</span>
         </button>
     </nav>
@@ -99,28 +93,24 @@
                 <!-- Stats Grid -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon">👥</div>
                         <div class="stat-info">
                             <div class="stat-value" id="total-patients">0</div>
                             <div class="stat-label" data-i18n="total_patients">Total Patients</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">📋</div>
                         <div class="stat-info">
                             <div class="stat-value" id="records-today">0</div>
                             <div class="stat-label" data-i18n="records_today">Today's Records</div>
                         </div>
                     </div>
                     <div class="stat-card alert-card-stat">
-                        <div class="stat-icon">⚠️</div>
                         <div class="stat-info">
                             <div class="stat-value" id="risk-alerts">0</div>
                             <div class="stat-label" data-i18n="high_risk">High Risk</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">⏰</div>
                         <div class="stat-info">
                             <div class="stat-value" id="pending-reminders">0</div>
                             <div class="stat-label" data-i18n="pending_reminders">Due Today</div>
@@ -214,7 +204,7 @@
                                 <div class="form-group checkbox-group">
                                     <label class="checkbox-label">
                                         <input type="checkbox" id="pregnancy-status" name="pregnancyStatus">
-                                        <span>🤰 Currently Pregnant</span>
+                                        <span>Currently Pregnant</span>
                                     </label>
                                 </div>
                                 <div class="form-group" id="lmp-group" style="display:none;">
@@ -227,12 +217,12 @@
                             <!-- Pregnancy Prediction Section - shown when pregnant is checked -->
                             <div id="prediction-section" class="prediction-section" style="display:none;">
                                 <div class="prediction-header">
-                                    <h4>🔮 Pregnancy Risk Assessment</h4>
+                                    <h4>Pregnancy Risk Assessment</h4>
                                     <p class="prediction-info">Fill vital signs above and click to analyze maternal
                                         health risk</p>
                                 </div>
                                 <button type="button" id="predict-btn" class="btn-prediction">
-                                    🔮 Get Risk Prediction
+                                    Get Risk Prediction
                                 </button>
                             </div>
                         </div>
@@ -305,35 +295,35 @@
                         <div class="symptoms-grid">
                             <label class="symptom-checkbox">
                                 <input type="checkbox" name="fever" id="symptom-fever">
-                                <span>🌡️ Fever</span>
+                                <span>Fever</span>
                             </label>
                             <label class="symptom-checkbox">
                                 <input type="checkbox" name="cough" id="symptom-cough">
-                                <span>😷 Cough</span>
+                                <span>Cough</span>
                             </label>
                             <label class="symptom-checkbox">
                                 <input type="checkbox" name="fatigue" id="symptom-fatigue">
-                                <span>😴 Fatigue</span>
+                                <span>Fatigue</span>
                             </label>
                             <label class="symptom-checkbox">
                                 <input type="checkbox" name="headache" id="symptom-headache">
-                                <span>🤕 Headache</span>
+                                <span>Headache</span>
                             </label>
                             <label class="symptom-checkbox">
                                 <input type="checkbox" name="bodyPain" id="symptom-body-pain">
-                                <span>💪 Body Pain</span>
+                                <span>Body Pain</span>
                             </label>
                             <label class="symptom-checkbox">
                                 <input type="checkbox" name="breathlessness" id="symptom-breathlessness">
-                                <span>😮‍💨 Breathlessness</span>
+                                <span>Breathlessness</span>
                             </label>
                             <label class="symptom-checkbox">
                                 <input type="checkbox" name="weightLoss" id="symptom-weight-loss">
-                                <span>⬇️ Weight Loss</span>
+                                <span>Weight Loss</span>
                             </label>
                             <label class="symptom-checkbox">
                                 <input type="checkbox" name="nightSweats" id="symptom-night-sweats">
-                                <span>💧 Night Sweats</span>
+                                <span>Night Sweats</span>
                             </label>
                         </div>
 
@@ -350,7 +340,7 @@
                         <div class="voice-input-section">
                             <div class="voice-controls">
                                 <button type="button" id="voice-btn" class="voice-btn">
-                                    <span class="voice-icon">🎤</span>
+                                    <span class="voice-icon">Mic</span>
                                     <span data-i18n="start_recording">Start Recording</span>
                                 </button>
                                 <select id="voice-language" class="voice-lang-select">
@@ -378,10 +368,10 @@
                     <!-- Form Actions -->
                     <div class="form-actions">
                         <button type="submit" class="btn-primary" id="save-btn">
-                            💾 Save Record
+                            Save Record
                         </button>
                         <button type="reset" class="btn-secondary">
-                            🔄 Clear Form
+                            Clear Form
                         </button>
                     </div>
                 </form>
@@ -399,7 +389,7 @@
                 <!-- Search and Filters -->
                 <div class="search-filter-bar">
                     <div class="search-box">
-                        <span class="search-icon">🔍</span>
+                        <span class="search-icon"></span>
                         <input type="text" id="search-patients" placeholder="Search by name or ID..."
                             class="search-input">
                     </div>
@@ -526,8 +516,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-secondary" id="edit-patient-btn">✏️ Edit</button>
-                <button class="btn-primary" id="add-record-btn">📝 Add Record</button>
+                <button class="btn-secondary" id="edit-patient-btn">Edit</button>
+                <button class="btn-primary" id="add-record-btn">Add Record</button>
             </div>
         </div>
     </div>
@@ -607,7 +597,7 @@
     <div id="prediction-modal" class="modal">
         <div class="modal-content prediction-modal">
             <div class="modal-header prediction-header-modal">
-                <h2><span id="prediction-icon">🔮</span> Pregnancy Risk Analysis</h2>
+                <h2><span id="prediction-icon"></span> Pregnancy Risk Analysis</h2>
                 <button class="modal-close prediction-modal-close">&times;</button>
             </div>
             <div class="modal-body">
@@ -629,11 +619,11 @@
                 <!-- Emergency Section -->
                 <div id="emergency-section" class="emergency-section" style="display:none;">
                     <div class="emergency-banner">
-                        <h3>🚨 EMERGENCY - Immediate Action Required</h3>
+                        <h3>EMERGENCY - Immediate Action Required</h3>
                         <p>This patient requires urgent medical attention!</p>
                     </div>
                     <div class="emergency-contacts-section">
-                        <h4>📞 Call for Help</h4>
+                        <h4>Call for Help</h4>
                         <div id="emergency-contacts" class="emergency-contacts"></div>
                     </div>
                 </div>
@@ -648,14 +638,14 @@
     <div id="emergency-modal" class="modal">
         <div class="modal-content emergency-modal">
             <div class="modal-header emergency-header">
-                <h2>🚨 EMERGENCY ALERT</h2>
+                <h2>EMERGENCY ALERT</h2>
                 <button class="modal-close prediction-modal-close">&times;</button>
             </div>
             <div class="modal-body">
                 <div id="emergency-alerts-list" class="emergency-alerts-list"></div>
 
                 <div class="emergency-contacts-section">
-                    <h4>📞 Emergency Contacts</h4>
+                    <h4>Emergency Contacts</h4>
                     <div id="general-emergency-contacts" class="emergency-contacts"></div>
                 </div>
             </div>

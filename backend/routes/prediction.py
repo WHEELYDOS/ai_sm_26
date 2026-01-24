@@ -1,69 +1,12 @@
-# ML Prediction Routes
+# ML Prediction Routes - Rule Based Fallback
 import os
-import pickle
-import numpy as np
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 prediction_bp = Blueprint('prediction', __name__, url_prefix='/api/predict')
 
-# Load ML model
-MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'models', 'pregnancy_risk_model.pkl')
+# Model support removed due to missing dependencies
 model = None
-
-def load_model():
-    """Load the pregnancy risk prediction model"""
-    global model
-    try:
-        if os.path.exists(MODEL_PATH):
-            with open(MODEL_PATH, 'rb') as f:
-                loaded = pickle.load(f)
-            
-            # Handle different pickle formats
-            if hasattr(loaded, 'predict'):
-                # It's a model object directly
-                model = loaded
-            elif isinstance(loaded, dict):
-                # It's a dictionary - look for model key
-                if 'pipeline' in loaded:
-                    model = loaded['pipeline']
-                elif 'model' in loaded:
-                    model = loaded['model']
-                elif 'classifier' in loaded:
-                    model = loaded['classifier']
-                elif 'estimator' in loaded:
-                    model = loaded['estimator']
-                else:
-                    # Try to find any sklearn model in the dict
-                    for key, value in loaded.items():
-                        if hasattr(value, 'predict'):
-                            model = value
-                            break
-                    else:
-                        print(f"Warning: Could not find model in dict. Keys: {loaded.keys()}")
-                        model = None
-            elif isinstance(loaded, (list, tuple)) and len(loaded) > 0:
-                # It's a tuple/list - first element might be model
-                if hasattr(loaded[0], 'predict'):
-                    model = loaded[0]
-                else:
-                    model = None
-            else:
-                model = None
-                
-            if model is not None and hasattr(model, 'predict'):
-                print(f"ML Model loaded successfully from {MODEL_PATH}")
-            else:
-                print(f"Warning: Could not extract valid model, using rule-based fallback")
-                model = None
-        else:
-            print(f"Warning: Model not found at {MODEL_PATH}")
-    except Exception as e:
-        print(f"Error loading model: {e}")
-        model = None
-
-# Load model on import
-load_model()
 
 # Risk level mapping - matches label encoder from model:
 # 0 = 'high risk', 1 = 'low risk', 2 = 'mid risk'
@@ -71,15 +14,15 @@ RISK_LEVELS = {
     0: {
         'level': 'high',
         'name': 'High Risk',
-        'color': 'red',
-        'icon': '🔴',
-        'message': 'URGENT: This pregnancy requires immediate medical attention!',
+        'color': '#d32f2f', # Red
+        'icon': 'alert-circle',
+        'message': 'URGENT: Immediate medical attention required',
         'recommendations': [
-            '🚨 SEEK IMMEDIATE MEDICAL CARE',
-            'Do not delay - visit the nearest hospital or call emergency services',
+            'SEEK IMMEDIATE MEDICAL CARE',
+            'Visit the nearest hospital or call emergency services',
             'Keep the patient calm and rested',
             'Monitor vital signs continuously',
-            'Prepare for possible hospitalization'
+            'Prepare for hospitalization'
         ],
         'emergency': True,
         'emergency_contacts': [
@@ -91,31 +34,31 @@ RISK_LEVELS = {
     1: {
         'level': 'low',
         'name': 'Low Risk',
-        'color': 'green',
-        'icon': '🟢',
-        'message': 'The pregnancy appears to be progressing normally.',
+        'color': '#2e7d32', # Green
+        'icon': 'check-circle',
+        'message': 'Pregnancy progressing normally',
         'recommendations': [
             'Continue regular prenatal checkups',
             'Maintain a balanced diet',
-            'Take prescribed vitamins and supplements',
-            'Stay physically active with light exercise',
-            'Get adequate rest and sleep'
+            'Take prescribed vitamins',
+            'Stay physically active',
+            'Get adequate rest'
         ],
         'emergency': False
     },
     2: {
         'level': 'medium',
         'name': 'Medium Risk',
-        'color': 'yellow',
-        'icon': '🟡',
-        'message': 'Some health indicators require monitoring.',
+        'color': '#ed6c02', # Orange/Yellow
+        'icon': 'alert-triangle',
+        'message': 'Monitoring required',
         'recommendations': [
-            'Schedule more frequent prenatal visits',
-            'Monitor blood pressure regularly',
-            'Watch for warning signs (headache, swelling, bleeding)',
-            'Maintain a low-sodium diet if BP is elevated',
+            'Schedule frequent prenatal visits',
+            'Monitor blood pressure',
+            'Watch for warning signs',
+            'Low-sodium diet if BP elevated',
             'Avoid strenuous activities',
-            'Contact healthcare provider if symptoms worsen'
+            'Contact provider if symptoms worsen'
         ],
         'emergency': False,
         'follow_up_days': 7
@@ -136,29 +79,10 @@ def predict_pregnancy_risk():
             if field not in data:
                 return jsonify({'error': f'Missing required field: {field}'}), 400
         
-        # Prepare features for model
-        # Features order: Age, SystolicBP, DiastolicBP, BS, BodyTemp, HeartRate
-        features = np.array([[
-            float(data['age']),
-            float(data['systolic_bp']),
-            float(data['diastolic_bp']),
-            float(data['blood_sugar']),
-            float(data['body_temp']),
-            float(data['heart_rate'])
-        ]])
+        # Prepare features for model - Removed ML dependencies
         
-        if model is None:
-            # Fallback rule-based prediction if model not loaded
-            risk_class = rule_based_prediction(data)
-        else:
-            # Use ML model
-            risk_class = int(model.predict(features)[0])
-            
-            # Get probability if available
-            try:
-                probabilities = model.predict_proba(features)[0]
-            except:
-                probabilities = None
+        # Rule-based prediction (Fallback)
+        risk_class = rule_based_prediction(data)
         
         # Get risk details
         risk_info = RISK_LEVELS.get(risk_class, RISK_LEVELS[1])
@@ -222,7 +146,7 @@ def check_general_emergency():
             alerts.append({
                 'type': 'hypertensive_crisis',
                 'severity': 'critical',
-                'message': f'⚠️ HYPERTENSIVE CRISIS: BP {bp_systolic}/{bp_diastolic}',
+                'message': f'HYPERTENSIVE CRISIS: BP {bp_systolic}/{bp_diastolic}',
                 'action': 'Seek immediate emergency care'
             })
         
@@ -231,7 +155,7 @@ def check_general_emergency():
             alerts.append({
                 'type': 'cardiac_emergency',
                 'severity': 'critical',
-                'message': f'⚠️ ABNORMAL HEART RATE: {heart_rate} bpm',
+                'message': f'ABNORMAL HEART RATE: {heart_rate} bpm',
                 'action': 'Seek immediate emergency care'
             })
         
@@ -240,7 +164,7 @@ def check_general_emergency():
             alerts.append({
                 'type': 'hyperthermia',
                 'severity': 'critical',
-                'message': f'⚠️ DANGEROUS FEVER: {temperature}°C',
+                'message': f'DANGEROUS FEVER: {temperature}°C',
                 'action': 'Cool the patient and seek emergency care'
             })
         
@@ -249,7 +173,7 @@ def check_general_emergency():
             alerts.append({
                 'type': 'glucose_emergency',
                 'severity': 'critical',
-                'message': f'⚠️ DANGEROUS BLOOD SUGAR: {blood_sugar} mg/dL',
+                'message': f'DANGEROUS BLOOD SUGAR: {blood_sugar} mg/dL',
                 'action': 'Seek immediate emergency care'
             })
         
@@ -258,7 +182,7 @@ def check_general_emergency():
             alerts.append({
                 'type': 'severe_anemia',
                 'severity': 'critical',
-                'message': f'⚠️ SEVERE ANEMIA: Hb {hemoglobin} g/dL',
+                'message': f'SEVERE ANEMIA: Hb {hemoglobin} g/dL',
                 'action': 'Urgent blood transfusion may be needed'
             })
         
@@ -272,7 +196,7 @@ def check_general_emergency():
                 {'name': 'Emergency Ambulance', 'number': '108'},
                 {'name': 'National Health Helpline', 'number': '104'}
             ]
-            response['message'] = '🚨 EMERGENCY: Immediate medical attention required!'
+            response['message'] = 'EMERGENCY: Immediate medical attention required!'
         else:
             response['message'] = 'No critical emergency detected'
         
@@ -322,8 +246,8 @@ def rule_based_prediction(data):
     
     # Determine risk level
     if score >= 4:
-        return 2  # High risk
+        return 0  # High risk (0)
     elif score >= 2:
-        return 1  # Medium risk
+        return 2  # Medium risk (2)
     else:
-        return 0  # Low risk
+        return 1  # Low risk (1)

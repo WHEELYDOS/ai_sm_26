@@ -15,7 +15,7 @@ sync_bp = Blueprint('sync', __name__, url_prefix='/api/sync')
 def sync_data():
     """Sync offline data to server"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         data = request.get_json()
         
         results = {
@@ -193,7 +193,7 @@ def sync_data():
 def get_latest():
     """Get latest data since timestamp"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         since = request.args.get('since')
         
         if since:
@@ -235,7 +235,7 @@ def get_latest():
 def get_sync_status():
     """Get sync status summary"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         pending_patients = Patient.query.filter_by(
             created_by=user_id, sync_status='pending'

@@ -23,9 +23,13 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-color: #E0F4E7;
+            /* Soft Mint */
+            background-image:
+                radial-gradient(at 0% 0%, hsla(153, 48%, 60%, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(208, 71%, 45%, 0.15) 0px, transparent 50%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -35,9 +39,12 @@
         .auth-container {
             width: 100%;
             max-width: 400px;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 8px 32px rgba(18, 65, 112, 0.1);
             overflow: hidden;
             animation: slideUp 0.6s ease-out;
         }
@@ -55,10 +62,11 @@
         }
 
         .auth-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 30px;
+            background: transparent;
+            padding: 40px 30px 20px;
             text-align: center;
-            color: white;
+            color: #124170;
+            /* Deep Navy */
         }
 
         .auth-header h1 {
@@ -98,8 +106,8 @@
         }
 
         .auth-tab.active {
-            color: #667eea;
-            background: white;
+            color: #124170;
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .auth-tab.active::after {
@@ -109,7 +117,8 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: #20667F;
+            /* Slate Teal */
             border-radius: 3px 3px 0 0;
         }
 
@@ -157,9 +166,9 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #20667F;
             background: white;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 4px rgba(32, 102, 127, 0.1);
         }
 
         .form-group input::placeholder {
@@ -169,7 +178,8 @@
         .btn-primary {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #20667F;
+            /* Slate Teal */
             color: white;
             border: none;
             border-radius: 12px;
@@ -182,7 +192,8 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            background: #1a5266;
+            box-shadow: 0 4px 12px rgba(32, 102, 127, 0.2);
         }
 
         .btn-primary:active {
@@ -317,7 +328,7 @@
 
     <div class="auth-container">
         <div class="auth-header">
-            <div class="logo">🏥</div>
+            <div class="logo" style="color: #67CE9E; font-weight: bold;">✚</div>
             <h1>AshaCare</h1>
             <p>Healthcare Management for ASHA Workers</p>
         </div>

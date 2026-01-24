@@ -14,7 +14,7 @@ reminders_bp = Blueprint('reminders', __name__, url_prefix='/api/reminders')
 def get_reminders():
     """Get all reminders with filters"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Base query - reminders for user's patients
         query = db.session.query(Reminder).join(Patient).filter(
@@ -73,7 +73,7 @@ def get_reminders():
 def create_reminder():
     """Create a new reminder"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         data = request.get_json()
         
         # Validate patient exists
@@ -130,7 +130,7 @@ def create_reminder():
 def update_reminder(reminder_id):
     """Update a reminder"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         reminder = db.session.query(Reminder).join(Patient).filter(
             Reminder.id == reminder_id,
@@ -175,7 +175,7 @@ def update_reminder(reminder_id):
 def complete_reminder(reminder_id):
     """Mark reminder as completed"""
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         reminder = db.session.query(Reminder).join(Patient).filter(
             Reminder.id == reminder_id,

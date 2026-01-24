@@ -8,60 +8,65 @@
    ============================================================================ */
 
 :root {
-    /* Primary Colors - Gradient theme */
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --primary-color: #667eea;
-    --primary-dark: #5a67d8;
-    --secondary-color: #764ba2;
-    
+    /* Professional Soft Mint Theme */
+    --primary-color: #124170;
+    /* Deep Navy - Text & Headings */
+    --primary-dark: #0a2a4a;
+    --secondary-color: #20667F;
+    /* Slate Teal - Actions */
+
     /* Status Colors */
-    --success-color: #38a169;
-    --success-light: #c6f6d5;
-    --warning-color: #dd6b20;
-    --warning-light: #feebc8;
-    --danger-color: #e53e3e;
-    --danger-light: #fed7d7;
-    --info-color: #3182ce;
-    --info-light: #bee3f8;
-    
+    --success-color: #2e7d32;
+    --success-light: #e8f5e9;
+    --warning-color: #ed6c02;
+    --warning-light: #fff3e0;
+    --danger-color: #d32f2f;
+    --danger-light: #ffebee;
+    --info-color: #0288d1;
+    --info-light: #e1f5fe;
+
     /* Neutral Colors */
-    --bg-primary: #f7fafc;
-    --bg-secondary: #edf2f7;
+    --bg-primary: #E0F4E7;
+    /* Soft Mint - Main Background */
+    --bg-secondary: #ffffff;
+    /* White - Cards/Sections */
     --bg-white: #ffffff;
-    --text-primary: #1a202c;
+    --text-primary: #124170;
+    /* Deep Navy */
     --text-secondary: #4a5568;
     --text-muted: #718096;
-    --border-color: #e2e8f0;
-    
+    --border-color: #67CE9E;
+    /* Sage Green - Borders */
+
     /* Spacing */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
     --spacing-md: 16px;
     --spacing-lg: 24px;
     --spacing-xl: 32px;
-    
+
     /* Typography */
-    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-size-xs: 11px;
     --font-size-sm: 13px;
     --font-size-base: 15px;
     --font-size-lg: 17px;
     --font-size-xl: 20px;
     --font-size-2xl: 24px;
-    
+
     /* Border Radius */
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
     --radius-xl: 24px;
     --radius-full: 50%;
-    
-    /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
-    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
-    
+
+    /* Shadows - softer for professional look */
+    --shadow-sm: 0 1px 2px rgba(18, 65, 112, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(18, 65, 112, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(18, 65, 112, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(18, 65, 112, 0.1);
+
     /* Transitions */
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
@@ -69,7 +74,9 @@
 }
 
 /* Reset */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -96,13 +103,17 @@ body {
    ============================================================================ */
 
 .header {
-    background: var(--primary-gradient);
-    color: white;
+    background: transparent;
+    color: var(--primary-color);
     padding: var(--spacing-md);
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: var(--shadow-md);
+    box-shadow: none;
+    border-bottom: 2px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    background-color: rgba(224, 244, 231, 0.9);
+    /* Soft Mint with opacity */
 }
 
 .header-content {
@@ -136,12 +147,13 @@ body {
 
 .language-select {
     padding: 6px 12px;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid var(--primary-color);
     border-radius: var(--radius-sm);
-    background: rgba(255,255,255,0.1);
-    color: white;
+    background: white;
+    color: var(--primary-color);
     font-size: var(--font-size-sm);
     cursor: pointer;
+    font-weight: 500;
 }
 
 .language-select option {
@@ -151,8 +163,8 @@ body {
 
 .sync-btn {
     position: relative;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
+    background: white;
+    border: 1px solid var(--primary-color);
     border-radius: var(--radius-full);
     width: 36px;
     height: 36px;
@@ -161,10 +173,12 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: var(--transition-fast);
+    color: var(--primary-color);
 }
 
 .sync-btn:hover {
-    background: rgba(255,255,255,0.25);
+    background: var(--bg-primary);
+    transform: scale(1.05);
 }
 
 .sync-btn.syncing .sync-icon {
@@ -172,7 +186,9 @@ body {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .sync-count {
@@ -224,8 +240,15 @@ body {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }
 
 /* User Menu */
@@ -237,16 +260,18 @@ body {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    border: 2px solid rgba(255,255,255,0.4);
+    background: var(--primary-color);
+    border: 2px solid white;
     color: white;
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition-fast);
+    box-shadow: var(--shadow-sm);
 }
 
 .user-btn:hover {
-    background: rgba(255,255,255,0.3);
+    background: var(--primary-dark);
+    transform: scale(1.05);
 }
 
 .user-dropdown {
@@ -268,8 +293,15 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .user-info {
@@ -383,8 +415,15 @@ body {
 }
 
 @keyframes slideIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ============================================================================
@@ -563,7 +602,7 @@ body {
     background: var(--bg-primary);
 }
 
-.symptom-checkbox input:checked + span {
+.symptom-checkbox input:checked+span {
     color: var(--primary-color);
     font-weight: 600;
 }
@@ -591,7 +630,7 @@ body {
 .voice-btn {
     flex: 1;
     padding: var(--spacing-md);
-    background: var(--primary-gradient);
+    background: var(--secondary-color);
     color: white;
     border: none;
     border-radius: var(--radius-md);
@@ -616,8 +655,15 @@ body {
 }
 
 @keyframes pulse-btn {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.5); }
-    50% { box-shadow: 0 0 0 10px rgba(229, 62, 62, 0); }
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 0 10px rgba(229, 62, 62, 0);
+    }
 }
 
 .voice-lang-select {
@@ -658,10 +704,25 @@ body {
     font-size: var(--font-size-sm);
 }
 
-.bmi-underweight { background: var(--warning-light); color: var(--warning-color); }
-.bmi-normal { background: var(--success-light); color: var(--success-color); }
-.bmi-overweight { background: var(--warning-light); color: var(--warning-color); }
-.bmi-obese { background: var(--danger-light); color: var(--danger-color); }
+.bmi-underweight {
+    background: var(--warning-light);
+    color: var(--warning-color);
+}
+
+.bmi-normal {
+    background: var(--success-light);
+    color: var(--success-color);
+}
+
+.bmi-overweight {
+    background: var(--warning-light);
+    color: var(--warning-color);
+}
+
+.bmi-obese {
+    background: var(--danger-light);
+    color: var(--danger-color);
+}
 
 /* Form Actions */
 .form-actions {
@@ -676,7 +737,8 @@ body {
 
 .btn-primary {
     padding: 14px 24px;
-    background: var(--primary-gradient);
+    background: var(--secondary-color);
+    /* Slate Teal */
     color: white;
     border: none;
     border-radius: var(--radius-md);
@@ -836,9 +898,20 @@ body {
     margin-top: var(--spacing-sm);
 }
 
-.risk-high { background: var(--danger-light); color: var(--danger-color); }
-.risk-medium { background: var(--warning-light); color: var(--warning-color); }
-.risk-low { background: var(--success-light); color: var(--success-color); }
+.risk-high {
+    background: var(--danger-light);
+    color: var(--danger-color);
+}
+
+.risk-medium {
+    background: var(--warning-light);
+    color: var(--warning-color);
+}
+
+.risk-low {
+    background: var(--success-light);
+    color: var(--success-color);
+}
 
 /* ============================================================================
    ALERTS
@@ -873,8 +946,13 @@ body {
     font-weight: 700;
 }
 
-.alert-stat.high .alert-count { color: var(--danger-color); }
-.alert-stat.medium .alert-count { color: var(--warning-color); }
+.alert-stat.high .alert-count {
+    color: var(--danger-color);
+}
+
+.alert-stat.medium .alert-count {
+    color: var(--warning-color);
+}
 
 .alert-label {
     font-size: var(--font-size-sm);
@@ -894,8 +972,13 @@ body {
     border-left: 4px solid;
 }
 
-.alert-card.severity-high { border-left-color: var(--danger-color); }
-.alert-card.severity-medium { border-left-color: var(--warning-color); }
+.alert-card.severity-high {
+    border-left-color: var(--danger-color);
+}
+
+.alert-card.severity-medium {
+    border-left-color: var(--warning-color);
+}
 
 .alert-card-header {
     display: flex;
@@ -985,9 +1068,17 @@ body {
     font-weight: 700;
 }
 
-.reminder-stat.overdue .reminder-count { color: var(--danger-color); }
-.reminder-stat.today .reminder-count { color: var(--warning-color); }
-.reminder-stat.upcoming .reminder-count { color: var(--info-color); }
+.reminder-stat.overdue .reminder-count {
+    color: var(--danger-color);
+}
+
+.reminder-stat.today .reminder-count {
+    color: var(--warning-color);
+}
+
+.reminder-stat.upcoming .reminder-count {
+    color: var(--info-color);
+}
 
 .reminders-tabs {
     display: flex;
@@ -1173,9 +1264,17 @@ body {
     border-radius: 3px;
 }
 
-.legend-high { background: var(--danger-color); }
-.legend-medium { background: var(--warning-color); }
-.legend-normal { background: var(--success-color); }
+.legend-high {
+    background: var(--danger-color);
+}
+
+.legend-medium {
+    background: var(--warning-color);
+}
+
+.legend-normal {
+    background: var(--success-color);
+}
 
 /* Patient ID Badge */
 .patient-id-badge {
@@ -1253,28 +1352,28 @@ body {
     .stats-grid {
         grid-template-columns: repeat(4, 1fr);
     }
-    
+
     .charts-container {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .form-row {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .symptoms-grid {
         grid-template-columns: repeat(4, 1fr);
     }
-    
+
     .patients-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .search-filter-bar {
         flex-direction: row;
         align-items: center;
     }
-    
+
     .filter-controls {
         width: auto;
     }
@@ -1288,7 +1387,7 @@ body {
     .patients-grid {
         grid-template-columns: repeat(3, 1fr);
     }
-    
+
     .alerts-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1346,8 +1445,13 @@ body {
 }
 
 @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 /* Download Progress */
@@ -1488,8 +1592,15 @@ body {
 }
 
 @keyframes pulse-badge {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 .prediction-message {
@@ -1556,8 +1667,15 @@ body {
 }
 
 @keyframes pulse-emergency {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.5); }
-    50% { box-shadow: 0 0 0 15px rgba(229, 62, 62, 0); }
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 0 15px rgba(229, 62, 62, 0);
+    }
 }
 
 .emergency-banner {
@@ -1615,8 +1733,15 @@ body {
 }
 
 @keyframes pulse-header {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.9; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.9;
+    }
 }
 
 .emergency-alerts-list {
@@ -1678,7 +1803,7 @@ body {
     .input-data-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .emergency-call-btn {
         font-size: var(--font-size-base);
         padding: var(--spacing-md);
