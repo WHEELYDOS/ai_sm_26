@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for PWA -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Patient EHR Progressive Web App with offline support">
+    <meta name="theme-color" content="#0066cc">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS App Links -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Patient EHR">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <title>Patient EHR - Healthcare Management</title>
+</head>
+<body>
+    <!-- Header with Language Selector -->
+    <header class="header">
+        <div class="header-content">
+            <h1 id="app-title">Patient EHR System</h1>
+            <div class="header-controls">
+                <!-- Language Selector -->
+                <select id="language-selector" class="language-select">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                </select>
+                
+                <!-- Offline Status Indicator -->
+                <div id="offline-indicator" class="offline-indicator online">
+                    <span id="status-text">Online</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-container">
+        <button class="tab-button active" data-tab="dashboard">
+            <span class="tab-icon">📊</span> <span class="tab-label" data-i18n="dashboard">Dashboard</span>
+        </button>
+        <button class="tab-button" data-tab="form">
+            <span class="tab-icon">📝</span> <span class="tab-label" data-i18n="new_record">New Record</span>
+        </button>
+        <button class="tab-button" data-tab="patients">
+            <span class="tab-icon">👥</span> <span class="tab-label" data-i18n="patients">Patients</span>
+        </button>
+        <button class="tab-button" data-tab="alerts">
+            <span class="tab-icon">⚠️</span> <span class="tab-label" data-i18n="alerts">Alerts</span>
+        </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        
+        <!-- Dashboard Tab -->
+        <section id="dashboard-tab" class="tab-content active">
+            <div class="dashboard-container">
+                <h2 data-i18n="dashboard">Dashboard</h2>
+                
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label" data-i18n="total_patients">Total Patients</div>
+                        <div class="stat-value" id="total-patients">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label" data-i18n="records_today">Records Today</div>
+                        <div class="stat-value" id="records-today">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label" data-i18n="high_risk">High Risk Alerts</div>
+                        <div class="stat-value alert-high" id="risk-alerts">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label" data-i18n="avg_age">Average Age</div>
+                        <div class="stat-value" id="avg-age">0</div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3 data-i18n="bp_distribution">Blood Pressure Distribution</h3>
+                        <canvas id="bp-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 data-i18n="bmi_distribution">BMI Distribution</h3>
+                        <canvas id="bmi-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Records -->
+                <div class="recent-section">
+                    <h3 data-i18n="recent_records">Recent Records</h3>
+                    <div id="recent-records" class="records-list">
+                        <p class="empty-state" data-i18n="no_records">No records yet</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Patient Form Tab -->
+        <section id="form-tab" class="tab-content">
+            <div class="form-container">
+                <h2 data-i18n="patient_information">Patient Information</h2>
+                
+                <form id="patient-form" class="patient-form">
+                    <!-- Personal Information -->
+                    <fieldset>
+                        <legend data-i18n="personal_info">Personal Information</legend>
+                        
+                        <div class="form-group">
+                            <label for="first-name" data-i18n="first_name">First Name</label>
+                            <input type="text" id="first-name" name="firstName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="last-name" data-i18n="last_name">Last Name</label>
+                            <input type="text" id="last-name" name="lastName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="age" data-i18n="age">Age</label>
+                            <input type="number" id="age" name="age" min="0" max="120" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender" data-i18n="gender">Gender</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">-- Select --</option>
+                                <option value="male" data-i18n="male">Male</option>
+                                <option value="female" data-i18n="female">Female</option>
+                                <option value="other" data-i18n="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact" data-i18n="contact">Contact Number</label>
+                            <input type="tel" id="contact" name="contact">
+                        </div>
+                    </fieldset>
+
+                    <!-- Medical Information -->
+                    <fieldset>
+                        <legend data-i18n="medical_info">Medical Information</legend>
+
+                        <div class="form-group">
+                            <label for="height" data-i18n="height">Height (cm)</label>
+                            <input type="number" id="height" name="height" step="0.1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weight" data-i18n="weight">Weight (kg)</label>
+                            <input type="number" id="weight" name="weight" step="0.1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bp-systolic" data-i18n="bp_systolic">BP Systolic (mmHg)</label>
+                            <input type="number" id="bp-systolic" name="bpSystolic">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bp-diastolic" data-i18n="bp_diastolic">BP Diastolic (mmHg)</label>
+                            <input type="number" id="bp-diastolic" name="bpDiastolic">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="heart-rate" data-i18n="heart_rate">Heart Rate (bpm)</label>
+                            <input type="number" id="heart-rate" name="heartRate">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="blood-sugar" data-i18n="blood_sugar">Blood Sugar (mg/dL)</label>
+                            <input type="number" id="blood-sugar" name="bloodSugar">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="diagnosis" data-i18n="diagnosis">Diagnosis</label>
+                            <textarea id="diagnosis" name="diagnosis" rows="4"></textarea>
+                        </div>
+                    </fieldset>
+
+                    <!-- Voice Input Section -->
+                    <fieldset>
+                        <legend data-i18n="voice_input">Voice Input</legend>
+                        <div class="voice-section">
+                            <button type="button" id="voice-btn" class="btn-primary">
+                                🎤 <span data-i18n="start_recording">Start Recording</span>
+                            </button>
+                            <div id="voice-status" class="voice-status"></div>
+                            <div id="voice-text" class="voice-text"></div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary" data-i18n="save">Save Record</button>
+                        <button type="reset" class="btn-secondary" data-i18n="clear">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Patients List Tab -->
+        <section id="patients-tab" class="tab-content">
+            <div class="patients-container">
+                <h2 data-i18n="patients_list">Patients List</h2>
+                
+                <div class="search-box">
+                    <input type="text" id="search-patients" class="search-input" 
+                           placeholder="Search patients..." data-i18n="search_placeholder">
+                </div>
+
+                <div id="patients-list" class="patients-grid">
+                    <p class="empty-state" data-i18n="no_patients">No patients found</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Risk Alerts Tab -->
+        <section id="alerts-tab" class="tab-content">
+            <div class="alerts-container">
+                <h2 data-i18n="risk_alerts">Risk Alerts</h2>
+                
+                <div id="alerts-list" class="alerts-grid">
+                    <p class="empty-state" data-i18n="no_alerts">No alerts at this time</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p data-i18n="footer_text">© 2026 Patient EHR System. All rights reserved.</p>
+        <p class="sync-status" id="sync-status"></p>
+    </footer>
+
+    <!-- Service Worker Registration -->
+    <script>
+        // Register service worker for offline functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully');
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+
+    <!-- JavaScript Files (Order matters) -->
+    <script src="js/i18n.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/chart-utils.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

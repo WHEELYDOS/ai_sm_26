@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="AshaCare - Patient Health Records Management">
+    <meta name="theme-color" content="#667eea">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AshaCare">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <title>AshaCare - Patient Management</title>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <span class="header-logo">🏥</span>
+                <h1 id="app-title">AshaCare</h1>
+            </div>
+            <div class="header-controls">
+                <!-- Language Selector -->
+                <select id="language-selector" class="language-select">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                </select>
+
+                <!-- Sync Button -->
+                <button id="sync-btn" class="sync-btn" title="Sync data">
+                    <span class="sync-icon">🔄</span>
+                    <span id="sync-count" class="sync-count" style="display:none;">0</span>
+                </button>
+
+                <!-- Online Status -->
+                <div id="offline-indicator" class="offline-indicator online">
+                    <span id="status-text">Online</span>
+                </div>
+
+                <!-- User Menu -->
+                <div class="user-menu">
+                    <button id="user-btn" class="user-btn">
+                        <span id="user-initial">U</span>
+                    </button>
+                    <div id="user-dropdown" class="user-dropdown">
+                        <div class="user-info">
+                            <span id="user-name">User</span>
+                            <span id="user-email">user@email.com</span>
+                        </div>
+                        <hr>
+                        <button id="logout-btn" class="dropdown-item">🚪 Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-container">
+        <button class="tab-button active" data-tab="dashboard">
+            <span class="tab-icon">📊</span>
+            <span class="tab-label" data-i18n="dashboard">Dashboard</span>
+        </button>
+        <button class="tab-button" data-tab="form">
+            <span class="tab-icon">📝</span>
+            <span class="tab-label" data-i18n="new_record">New Record</span>
+        </button>
+        <button class="tab-button" data-tab="patients">
+            <span class="tab-icon">👥</span>
+            <span class="tab-label" data-i18n="patients">Patients</span>
+        </button>
+        <button class="tab-button" data-tab="alerts">
+            <span class="tab-icon">⚠️</span>
+            <span class="tab-label" data-i18n="alerts">Alerts</span>
+        </button>
+        <button class="tab-button" data-tab="reminders">
+            <span class="tab-icon">⏰</span>
+            <span class="tab-label" data-i18n="reminders">Reminders</span>
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Dashboard Tab -->
+        <section id="dashboard-tab" class="tab-content active">
+            <div class="dashboard-container">
+                <h2 data-i18n="dashboard">Dashboard</h2>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="total-patients">0</div>
+                            <div class="stat-label" data-i18n="total_patients">Total Patients</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="records-today">0</div>
+                            <div class="stat-label" data-i18n="records_today">Today's Records</div>
+                        </div>
+                    </div>
+                    <div class="stat-card alert-card-stat">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="risk-alerts">0</div>
+                            <div class="stat-label" data-i18n="high_risk">High Risk</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏰</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="pending-reminders">0</div>
+                            <div class="stat-label" data-i18n="pending_reminders">Due Today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3 data-i18n="bp_distribution">Blood Pressure</h3>
+                        <canvas id="bp-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 data-i18n="risk_distribution">Risk Distribution</h3>
+                        <canvas id="risk-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Records -->
+                <div class="recent-section">
+                    <h3 data-i18n="recent_records">Recent Records</h3>
+                    <div id="recent-records" class="records-list">
+                        <p class="empty-state" data-i18n="no_records">No records yet</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Patient Form Tab -->
+        <section id="form-tab" class="tab-content">
+            <div class="form-container">
+                <h2 data-i18n="patient_information">Patient Information</h2>
+
+                <form id="patient-form" class="patient-form">
+                    <!-- Personal Information -->
+                    <fieldset class="form-section">
+                        <legend data-i18n="personal_info">Personal Information</legend>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first-name" data-i18n="first_name">First Name *</label>
+                                <input type="text" id="first-name" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last-name" data-i18n="last_name">Last Name *</label>
+                                <input type="text" id="last-name" name="lastName" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="age" data-i18n="age">Age *</label>
+                                <input type="number" id="age" name="age" min="0" max="120" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender" data-i18n="gender">Gender *</label>
+                                <select id="gender" name="gender" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contact" data-i18n="contact">Contact Number</label>
+                                <input type="tel" id="contact" name="contact" pattern="[0-9]{10}">
+                            </div>
+                            <div class="form-group">
+                                <label for="blood-group">Blood Group</label>
+                                <select id="blood-group" name="bloodGroup">
+                                    <option value="">-- Select --</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Pregnancy Section (for females) -->
+                        <div id="pregnancy-section" class="pregnancy-section" style="display:none;">
+                            <div class="form-row">
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="pregnancy-status" name="pregnancyStatus">
+                                        <span>Currently Pregnant</span>
+                                    </label>
+                                </div>
+                                <div class="form-group" id="lmp-group" style="display:none;">
+                                    <label for="last-menstrual-date">Last Menstrual Date</label>
+                                    <input type="date" id="last-menstrual-date" name="lastMenstrualDate">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Physical Measurements -->
+                    <fieldset class="form-section">
+                        <legend data-i18n="physical_info">Physical Measurements</legend>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="height" data-i18n="height">Height (cm)</label>
+                                <input type="number" id="height" name="height" step="0.1" min="30" max="250">
+                            </div>
+                            <div class="form-group">
+                                <label for="weight" data-i18n="weight">Weight (kg)</label>
+                                <input type="number" id="weight" name="weight" step="0.1" min="1" max="300">
+                            </div>
+                        </div>
+
+                        <div class="bmi-display" id="bmi-display" style="display:none;">
+                            <span>BMI: </span>
+                            <strong id="bmi-value">--</strong>
+                            <span id="bmi-category" class="bmi-category"></span>
+                        </div>
+                    </fieldset>
+
+                    <!-- Vital Signs -->
+                    <fieldset class="form-section">
+                        <legend data-i18n="vital_signs">Vital Signs</legend>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bp-systolic" data-i18n="bp_systolic">BP Systolic (mmHg)</label>
+                                <input type="number" id="bp-systolic" name="bpSystolic" min="50" max="250">
+                            </div>
+                            <div class="form-group">
+                                <label for="bp-diastolic" data-i18n="bp_diastolic">BP Diastolic (mmHg)</label>
+                                <input type="number" id="bp-diastolic" name="bpDiastolic" min="30" max="150">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="heart-rate" data-i18n="heart_rate">Heart Rate (bpm)</label>
+                                <input type="number" id="heart-rate" name="heartRate" min="30" max="200">
+                            </div>
+                            <div class="form-group">
+                                <label for="temperature">Temperature (°C)</label>
+                                <input type="number" id="temperature" name="temperature" step="0.1" min="35" max="42">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="blood-sugar" data-i18n="blood_sugar">Blood Sugar (mg/dL)</label>
+                                <input type="number" id="blood-sugar" name="bloodSugar" min="20" max="600">
+                            </div>
+                            <div class="form-group">
+                                <label for="hemoglobin">Hemoglobin (g/dL)</label>
+                                <input type="number" id="hemoglobin" name="hemoglobin" step="0.1" min="3" max="20">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Symptoms -->
+                    <fieldset class="form-section">
+                        <legend data-i18n="symptoms">Symptoms</legend>
+
+                        <div class="symptoms-grid">
+                            <label class="symptom-checkbox">
+                                <input type="checkbox" name="fever" id="symptom-fever">
+                                <span>🌡️ Fever</span>
+                            </label>
+                            <label class="symptom-checkbox">
+                                <input type="checkbox" name="cough" id="symptom-cough">
+                                <span>😷 Cough</span>
+                            </label>
+                            <label class="symptom-checkbox">
+                                <input type="checkbox" name="fatigue" id="symptom-fatigue">
+                                <span>😴 Fatigue</span>
+                            </label>
+                            <label class="symptom-checkbox">
+                                <input type="checkbox" name="headache" id="symptom-headache">
+                                <span>🤕 Headache</span>
+                            </label>
+                            <label class="symptom-checkbox">
+                                <input type="checkbox" name="bodyPain" id="symptom-body-pain">
+                                <span>💪 Body Pain</span>
+                            </label>
+                            <label class="symptom-checkbox">
+                                <input type="checkbox" name="breathlessness" id="symptom-breathlessness">
+                                <span>😮‍💨 Breathlessness</span>
+                            </label>
+                            <label class="symptom-checkbox">
+                                <input type="checkbox" name="weightLoss" id="symptom-weight-loss">
+                                <span>⬇️ Weight Loss</span>
+                            </label>
+                            <label class="symptom-checkbox">
+                                <input type="checkbox" name="nightSweats" id="symptom-night-sweats">
+                                <span>💧 Night Sweats</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group" id="cough-duration-group" style="display:none;">
+                            <label for="cough-duration">Cough Duration (days)</label>
+                            <input type="number" id="cough-duration" name="coughDuration" min="1" max="365">
+                        </div>
+                    </fieldset>
+
+                    <!-- Diagnosis with Voice Input -->
+                    <fieldset class="form-section">
+                        <legend data-i18n="diagnosis">Diagnosis & Notes</legend>
+
+                        <div class="voice-input-section">
+                            <div class="voice-controls">
+                                <button type="button" id="voice-btn" class="voice-btn">
+                                    <span class="voice-icon">🎤</span>
+                                    <span data-i18n="start_recording">Start Recording</span>
+                                </button>
+                                <select id="voice-language" class="voice-lang-select">
+                                    <option value="en-IN">English</option>
+                                    <option value="hi-IN">हिंदी</option>
+                                </select>
+                            </div>
+                            <div id="voice-status" class="voice-status"></div>
+                            <div id="voice-text" class="voice-text"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="diagnosis" data-i18n="diagnosis">Diagnosis</label>
+                            <textarea id="diagnosis" name="diagnosis" rows="4"
+                                placeholder="Enter diagnosis or use voice input..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">Additional Notes</label>
+                            <textarea id="notes" name="notes" rows="3"
+                                placeholder="Any additional observations..."></textarea>
+                        </div>
+                    </fieldset>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary" id="save-btn">
+                            💾 Save Record
+                        </button>
+                        <button type="reset" class="btn-secondary">
+                            🔄 Clear Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Patients List Tab -->
+        <section id="patients-tab" class="tab-content">
+            <div class="patients-container">
+                <div class="patients-header">
+                    <h2 data-i18n="patients_list">Patients</h2>
+                    <button class="btn-primary" id="add-patient-btn">+ Add New</button>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="search-filter-bar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-patients" placeholder="Search by name or ID..."
+                            class="search-input">
+                    </div>
+
+                    <div class="filter-controls">
+                        <select id="filter-gender" class="filter-select">
+                            <option value="">All Genders</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+
+                        <select id="sort-by" class="filter-select">
+                            <option value="created_at">Recent First</option>
+                            <option value="first_name">Name A-Z</option>
+                            <option value="age">Age</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Patients Grid -->
+                <div id="patients-list" class="patients-grid">
+                    <p class="empty-state" data-i18n="no_patients">No patients found</p>
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="pagination"></div>
+            </div>
+        </section>
+
+        <!-- Alerts Tab -->
+        <section id="alerts-tab" class="tab-content">
+            <div class="alerts-container">
+                <h2 data-i18n="risk_alerts">Health Alerts</h2>
+
+                <div class="alerts-summary">
+                    <div class="alert-stat high">
+                        <span class="alert-count" id="high-alerts-count">0</span>
+                        <span class="alert-label">High Risk</span>
+                    </div>
+                    <div class="alert-stat medium">
+                        <span class="alert-count" id="medium-alerts-count">0</span>
+                        <span class="alert-label">Medium Risk</span>
+                    </div>
+                </div>
+
+                <div id="alerts-list" class="alerts-grid">
+                    <p class="empty-state" data-i18n="no_alerts">No alerts at this time</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reminders Tab -->
+        <section id="reminders-tab" class="tab-content">
+            <div class="reminders-container">
+                <div class="reminders-header">
+                    <h2 data-i18n="reminders">Reminders</h2>
+                    <button class="btn-primary" id="add-reminder-btn">+ Add Reminder</button>
+                </div>
+
+                <div class="reminders-summary">
+                    <div class="reminder-stat overdue">
+                        <span class="reminder-count" id="overdue-count">0</span>
+                        <span>Overdue</span>
+                    </div>
+                    <div class="reminder-stat today">
+                        <span class="reminder-count" id="today-count">0</span>
+                        <span>Due Today</span>
+                    </div>
+                    <div class="reminder-stat upcoming">
+                        <span class="reminder-count" id="upcoming-count">0</span>
+                        <span>Upcoming</span>
+                    </div>
+                </div>
+
+                <div class="reminders-tabs">
+                    <button class="reminder-tab active" data-filter="all">All</button>
+                    <button class="reminder-tab" data-filter="overdue">Overdue</button>
+                    <button class="reminder-tab" data-filter="today">Today</button>
+                    <button class="reminder-tab" data-filter="upcoming">Upcoming</button>
+                </div>
+
+                <div id="reminders-list" class="reminders-list">
+                    <p class="empty-state">No reminders</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Patient Detail Modal -->
+    <div id="patient-modal" class="modal">
+        <div class="modal-content patient-detail-modal">
+            <div class="modal-header">
+                <h2 id="modal-patient-name">Patient Details</h2>
+                <button class="modal-close" id="close-patient-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="patient-detail-grid">
+                    <!-- Patient Info -->
+                    <div class="patient-info-section">
+                        <div class="patient-id-badge" id="modal-patient-uid">ASHA-XXXXXX</div>
+                        <div class="patient-basic-info" id="modal-patient-info"></div>
+                    </div>
+
+                    <!-- Body Diagram -->
+                    <div class="body-diagram-section">
+                        <h3>Health Status</h3>
+                        <div id="body-diagram" class="body-diagram">
+                            <!-- SVG body diagram will be inserted here -->
+                        </div>
+                        <div id="body-legend" class="body-legend"></div>
+                    </div>
+
+                    <!-- Alerts for this patient -->
+                    <div class="patient-alerts-section">
+                        <h3>Active Alerts</h3>
+                        <div id="modal-patient-alerts"></div>
+                    </div>
+
+                    <!-- Recent Records -->
+                    <div class="patient-records-section">
+                        <h3>Recent Records</h3>
+                        <div id="modal-patient-records"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="edit-patient-btn">✏️ Edit</button>
+                <button class="btn-primary" id="add-record-btn">📝 Add Record</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reminder Modal -->
+    <div id="reminder-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Reminder</h2>
+                <button class="modal-close" id="close-reminder-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="reminder-form">
+                    <div class="form-group">
+                        <label for="reminder-patient">Patient *</label>
+                        <select id="reminder-patient" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminder-type">Type *</label>
+                        <select id="reminder-type" required>
+                            <option value="vaccination">Vaccination</option>
+                            <option value="anc_visit">ANC Visit</option>
+                            <option value="medicine">Medicine</option>
+                            <option value="follow_up">Follow-up</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminder-title">Title *</label>
+                        <input type="text" id="reminder-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminder-date">Due Date *</label>
+                        <input type="date" id="reminder-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminder-description">Description</label>
+                        <textarea id="reminder-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Reminder</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Model Download Modal -->
+    <div id="voice-model-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎤 Download Voice Models</h2>
+                <button class="modal-close" id="close-voice-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Download voice models for offline speech recognition:</p>
+                <div class="model-download-options">
+                    <div class="model-option">
+                        <span>English (Indian)</span>
+                        <button class="btn-secondary" id="download-english">Download (~40MB)</button>
+                    </div>
+                    <div class="model-option">
+                        <span>Hindi</span>
+                        <button class="btn-secondary" id="download-hindi">Download (~40MB)</button>
+                    </div>
+                </div>
+                <div id="download-progress" class="download-progress" style="display:none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <span id="progress-text">Downloading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 AshaCare. All rights reserved.</p>
+        <p class="sync-status" id="sync-status"></p>
+    </footer>
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW registered'))
+                    .catch(err => console.error('SW failed:', err));
+            });
+        }
+    </script>
+
+    <!-- JavaScript Files -->
+    <script src="js/i18n.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sync.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/alerts.js"></script>
+    <script src="js/body-diagram.js"></script>
+    <script src="js/chart-utils.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

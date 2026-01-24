@@ -1,0 +1,66 @@
+{
+    "name": "AshaCare",
+    "short_name": "AshaCare",
+    "description": "Healthcare Management PWA for ASHA Workers - Offline-first patient records with smart alerts",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#667eea",
+    "background_color": "#f7fafc",
+    "lang": "en",
+    "categories": ["health", "medical", "productivity"],
+    "icons": [
+        {
+            "src": "assets/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "assets/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "assets/screenshot-dashboard.png",
+            "sizes": "390x844",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Dashboard overview"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Add Patient",
+            "short_name": "Add",
+            "url": "/app#form",
+            "description": "Add a new patient record",
+            "icons": [{"src": "assets/icon-add.png", "sizes": "96x96"}]
+        },
+        {
+            "name": "View Patients",
+            "short_name": "Patients",
+            "url": "/app#patients",
+            "description": "View all patients",
+            "icons": [{"src": "assets/icon-patients.png", "sizes": "96x96"}]
+        },
+        {
+            "name": "Alerts",
+            "short_name": "Alerts",
+            "url": "/app#alerts",
+            "description": "View health alerts",
+            "icons": [{"src": "assets/icon-alert.png", "sizes": "96x96"}]
+        }
+    ],
+    "share_target": {
+        "action": "/app",
+        "method": "GET",
+        "params": {
+            "title": "name",
+            "text": "notes"
+        }
+    }
+}
