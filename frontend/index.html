@@ -214,13 +214,26 @@
                                 <div class="form-group checkbox-group">
                                     <label class="checkbox-label">
                                         <input type="checkbox" id="pregnancy-status" name="pregnancyStatus">
-                                        <span>Currently Pregnant</span>
+                                        <span>🤰 Currently Pregnant</span>
                                     </label>
                                 </div>
                                 <div class="form-group" id="lmp-group" style="display:none;">
-                                    <label for="last-menstrual-date">Last Menstrual Date</label>
-                                    <input type="date" id="last-menstrual-date" name="lastMenstrualDate">
+                                    <label for="pregnancy-week">Pregnancy Week (1-42)</label>
+                                    <input type="number" id="pregnancy-week" name="pregnancyWeek" min="1" max="42"
+                                        placeholder="e.g., 24">
                                 </div>
+                            </div>
+
+                            <!-- Pregnancy Prediction Section - shown when pregnant is checked -->
+                            <div id="prediction-section" class="prediction-section" style="display:none;">
+                                <div class="prediction-header">
+                                    <h4>🔮 Pregnancy Risk Assessment</h4>
+                                    <p class="prediction-info">Fill vital signs above and click to analyze maternal
+                                        health risk</p>
+                                </div>
+                                <button type="button" id="predict-btn" class="btn-prediction">
+                                    🔮 Get Risk Prediction
+                                </button>
                             </div>
                         </div>
                     </fieldset>
@@ -590,6 +603,68 @@
         </div>
     </div>
 
+    <!-- Prediction Result Modal -->
+    <div id="prediction-modal" class="modal">
+        <div class="modal-content prediction-modal">
+            <div class="modal-header prediction-header-modal">
+                <h2><span id="prediction-icon">🔮</span> Pregnancy Risk Analysis</h2>
+                <button class="modal-close prediction-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="prediction-result">
+                    <div class="risk-badge-large" id="prediction-risk-level">Low Risk</div>
+                    <p class="prediction-message" id="prediction-message"></p>
+                </div>
+
+                <div class="prediction-input-summary">
+                    <h4>📊 Input Values</h4>
+                    <div id="prediction-input-data" class="input-data-grid"></div>
+                </div>
+
+                <div class="prediction-recommendations">
+                    <h4>📋 Recommendations</h4>
+                    <ul id="prediction-recommendations"></ul>
+                </div>
+
+                <!-- Emergency Section -->
+                <div id="emergency-section" class="emergency-section" style="display:none;">
+                    <div class="emergency-banner">
+                        <h3>🚨 EMERGENCY - Immediate Action Required</h3>
+                        <p>This patient requires urgent medical attention!</p>
+                    </div>
+                    <div class="emergency-contacts-section">
+                        <h4>📞 Call for Help</h4>
+                        <div id="emergency-contacts" class="emergency-contacts"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary prediction-modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- General Emergency Modal -->
+    <div id="emergency-modal" class="modal">
+        <div class="modal-content emergency-modal">
+            <div class="modal-header emergency-header">
+                <h2>🚨 EMERGENCY ALERT</h2>
+                <button class="modal-close prediction-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="emergency-alerts-list" class="emergency-alerts-list"></div>
+
+                <div class="emergency-contacts-section">
+                    <h4>📞 Emergency Contacts</h4>
+                    <div id="general-emergency-contacts" class="emergency-contacts"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary prediction-modal-close">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <p>© 2026 AshaCare. All rights reserved.</p>
@@ -616,6 +691,7 @@
     <script src="js/alerts.js"></script>
     <script src="js/body-diagram.js"></script>
     <script src="js/chart-utils.js"></script>
+    <script src="js/prediction.js"></script>
     <script src="js/app.js"></script>
 </body>
 

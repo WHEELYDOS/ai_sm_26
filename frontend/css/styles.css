@@ -1383,3 +1383,304 @@ body {
     background: var(--bg-secondary);
     border-radius: var(--radius-sm);
 }
+
+/* ============================================================================
+   PREDICTION & EMERGENCY STYLES
+   ============================================================================ */
+
+/* Prediction Section in Form */
+.prediction-section {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: var(--radius-md);
+    border: 2px dashed var(--primary-color);
+}
+
+.prediction-header h4 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.prediction-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-md);
+}
+
+.btn-prediction {
+    width: 100%;
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.btn-prediction:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-prediction:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Prediction Modal */
+.prediction-modal {
+    max-width: 500px;
+}
+
+.prediction-modal.risk-low .modal-header {
+    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+}
+
+.prediction-modal.risk-medium .modal-header {
+    background: linear-gradient(135deg, #dd6b20 0%, #c05621 100%);
+}
+
+.prediction-modal.risk-high .modal-header {
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+}
+
+.prediction-header-modal {
+    padding: var(--spacing-lg);
+}
+
+.prediction-result {
+    text-align: center;
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.risk-badge-large {
+    display: inline-block;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--spacing-md);
+}
+
+.risk-badge-large.risk-low {
+    background: var(--success-light);
+    color: var(--success-color);
+}
+
+.risk-badge-large.risk-medium {
+    background: var(--warning-light);
+    color: var(--warning-color);
+}
+
+.risk-badge-large.risk-high {
+    background: var(--danger-light);
+    color: var(--danger-color);
+    animation: pulse-badge 1.5s infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.prediction-message {
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.prediction-input-summary {
+    margin-bottom: var(--spacing-lg);
+}
+
+.prediction-input-summary h4 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.input-data-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.input-data-grid div {
+    font-size: var(--font-size-sm);
+}
+
+.prediction-recommendations {
+    margin-bottom: var(--spacing-lg);
+}
+
+.prediction-recommendations h4 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.prediction-recommendations ul {
+    list-style: none;
+    padding: 0;
+}
+
+.prediction-recommendations li {
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+}
+
+/* Emergency Section */
+.emergency-section {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: var(--danger-light);
+    border-radius: var(--radius-md);
+    border: 2px solid var(--danger-color);
+}
+
+.emergency-section.pulse-emergency {
+    animation: pulse-emergency 1s infinite;
+}
+
+@keyframes pulse-emergency {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.5); }
+    50% { box-shadow: 0 0 0 15px rgba(229, 62, 62, 0); }
+}
+
+.emergency-banner {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.emergency-banner h3 {
+    color: var(--danger-color);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-sm);
+}
+
+.emergency-contacts-section h4 {
+    color: var(--danger-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.emergency-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.emergency-call-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.emergency-call-btn:hover {
+    background: #c53030;
+    transform: scale(1.02);
+}
+
+/* Emergency Modal */
+.emergency-modal {
+    max-width: 450px;
+}
+
+.emergency-header {
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+    animation: pulse-header 1s infinite;
+}
+
+@keyframes pulse-header {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.9; }
+}
+
+.emergency-alerts-list {
+    margin-bottom: var(--spacing-lg);
+}
+
+.emergency-alert-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--danger-light);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-sm);
+    border-left: 4px solid var(--danger-color);
+}
+
+.emergency-alert-item .alert-icon {
+    font-size: 24px;
+}
+
+.emergency-alert-item .alert-content strong {
+    display: block;
+    color: var(--danger-color);
+    margin-bottom: var(--spacing-xs);
+}
+
+.emergency-alert-item .alert-content p {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Risk Badge in Form */
+.risk-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+.risk-badge.risk-low {
+    background: var(--success-light);
+    color: var(--success-color);
+}
+
+.risk-badge.risk-medium {
+    background: var(--warning-light);
+    color: var(--warning-color);
+}
+
+.risk-badge.risk-high {
+    background: var(--danger-light);
+    color: var(--danger-color);
+}
+
+/* Responsive for prediction */
+@media (max-width: 480px) {
+    .input-data-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .emergency-call-btn {
+        font-size: var(--font-size-base);
+        padding: var(--spacing-md);
+    }
+}

@@ -55,12 +55,14 @@ def create_app(config_name='default'):
     from routes.records import records_bp
     from routes.reminders import reminders_bp
     from routes.sync import sync_bp
+    from routes.prediction import prediction_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(patients_bp)
     app.register_blueprint(records_bp)
     app.register_blueprint(reminders_bp)
     app.register_blueprint(sync_bp)
+    app.register_blueprint(prediction_bp)
     
     # Serve frontend files
     frontend_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
