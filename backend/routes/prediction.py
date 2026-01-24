@@ -65,41 +65,10 @@ def load_model():
 # Load model on import
 load_model()
 
-# Risk level mapping
+# Risk level mapping - matches label encoder from model:
+# 0 = 'high risk', 1 = 'low risk', 2 = 'mid risk'
 RISK_LEVELS = {
     0: {
-        'level': 'low',
-        'name': 'Low Risk',
-        'color': 'green',
-        'icon': '🟢',
-        'message': 'The pregnancy appears to be progressing normally.',
-        'recommendations': [
-            'Continue regular prenatal checkups',
-            'Maintain a balanced diet',
-            'Take prescribed vitamins and supplements',
-            'Stay physically active with light exercise',
-            'Get adequate rest and sleep'
-        ],
-        'emergency': False
-    },
-    1: {
-        'level': 'medium',
-        'name': 'Medium Risk',
-        'color': 'yellow',
-        'icon': '🟡',
-        'message': 'Some health indicators require monitoring.',
-        'recommendations': [
-            'Schedule more frequent prenatal visits',
-            'Monitor blood pressure regularly',
-            'Watch for warning signs (headache, swelling, bleeding)',
-            'Maintain a low-sodium diet if BP is elevated',
-            'Avoid strenuous activities',
-            'Contact healthcare provider if symptoms worsen'
-        ],
-        'emergency': False,
-        'follow_up_days': 7
-    },
-    2: {
         'level': 'high',
         'name': 'High Risk',
         'color': 'red',
@@ -118,6 +87,38 @@ RISK_LEVELS = {
             {'name': 'Women Helpline', 'number': '1091'},
             {'name': 'National Health Helpline', 'number': '104'}
         ]
+    },
+    1: {
+        'level': 'low',
+        'name': 'Low Risk',
+        'color': 'green',
+        'icon': '🟢',
+        'message': 'The pregnancy appears to be progressing normally.',
+        'recommendations': [
+            'Continue regular prenatal checkups',
+            'Maintain a balanced diet',
+            'Take prescribed vitamins and supplements',
+            'Stay physically active with light exercise',
+            'Get adequate rest and sleep'
+        ],
+        'emergency': False
+    },
+    2: {
+        'level': 'medium',
+        'name': 'Medium Risk',
+        'color': 'yellow',
+        'icon': '🟡',
+        'message': 'Some health indicators require monitoring.',
+        'recommendations': [
+            'Schedule more frequent prenatal visits',
+            'Monitor blood pressure regularly',
+            'Watch for warning signs (headache, swelling, bleeding)',
+            'Maintain a low-sodium diet if BP is elevated',
+            'Avoid strenuous activities',
+            'Contact healthcare provider if symptoms worsen'
+        ],
+        'emergency': False,
+        'follow_up_days': 7
     }
 }
 
