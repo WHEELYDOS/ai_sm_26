@@ -150,7 +150,33 @@
                     <fieldset class="form-section">
                         <legend data-i18n="personal_info">Personal Information</legend>
 
+                        <!-- Patient Type Selector -->
                         <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="patient-type">Patient Category *</label>
+                                <div class="patient-type-selector">
+                                    <label class="type-option">
+                                        <input type="radio" name="patientType" value="adult" checked>
+                                        <span class="type-label">👤 Adult</span>
+                                    </label>
+                                    <label class="type-option">
+                                        <input type="radio" name="patientType" value="child">
+                                        <span class="type-label">👶 Child</span>
+                                    </label>
+                                    <label class="type-option">
+                                        <input type="radio" name="patientType" value="newborn">
+                                        <span class="type-label">🍼 Newborn</span>
+                                    </label>
+                                    <label class="type-option">
+                                        <input type="radio" name="patientType" value="pregnant">
+                                        <span class="type-label">🤰 Pregnant</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Patient Name Fields (for adults, children, pregnant) -->
+                        <div class="form-row" id="patient-name-row">
                             <div class="form-group">
                                 <label for="first-name" data-i18n="first_name">First Name *</label>
                                 <input type="text" id="first-name" name="firstName" required>
@@ -161,10 +187,29 @@
                             </div>
                         </div>
 
-                        <div class="form-row">
+                        <!-- Parent Name Fields (for newborns) -->
+                        <div class="form-row" id="parent-name-row" style="display: none;">
                             <div class="form-group">
+                                <label for="father-name">Father's Name *</label>
+                                <input type="text" id="father-name" name="fatherName">
+                            </div>
+                            <div class="form-group">
+                                <label for="mother-name">Mother's Name</label>
+                                <input type="text" id="mother-name" name="motherName">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group" id="age-group">
                                 <label for="age" data-i18n="age">Age *</label>
-                                <input type="number" id="age" name="age" min="0" max="120" required>
+                                <div class="age-input-group">
+                                    <input type="number" id="age" name="age" min="0" max="120" required>
+                                    <select id="age-unit" name="ageUnit" class="age-unit-select">
+                                        <option value="years">Years</option>
+                                        <option value="months">Months</option>
+                                        <option value="days">Days</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="gender" data-i18n="gender">Gender *</label>
@@ -179,8 +224,8 @@
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="contact" data-i18n="contact">Contact Number</label>
-                                <input type="tel" id="contact" name="contact" pattern="[0-9]{10}">
+                                <label for="contact" data-i18n="contact">Contact Number *</label>
+                                <input type="tel" id="contact" name="contact" pattern="[0-9]{10}" required>
                             </div>
                             <div class="form-group">
                                 <label for="blood-group">Blood Group</label>
@@ -200,14 +245,18 @@
 
                         <!-- Pregnancy Section (for females) -->
                         <div id="pregnancy-section" class="pregnancy-section" style="display:none;">
-                            <div class="form-row">
+                            <!-- Checkbox for Adult females to indicate if pregnant -->
+                            <div class="form-row" id="pregnancy-checkbox-row">
                                 <div class="form-group checkbox-group">
                                     <label class="checkbox-label">
                                         <input type="checkbox" id="pregnancy-status" name="pregnancyStatus">
                                         <span>Currently Pregnant</span>
                                     </label>
                                 </div>
-                                <div class="form-group" id="lmp-group" style="display:none;">
+                            </div>
+                            <!-- Pregnancy details (shown for pregnant type or when checkbox is checked) -->
+                            <div class="form-row" id="lmp-group" style="display:none;">
+                                <div class="form-group">
                                     <label for="pregnancy-week">Pregnancy Week (1-42)</label>
                                     <input type="number" id="pregnancy-week" name="pregnancyWeek" min="1" max="42"
                                         placeholder="e.g., 24">
@@ -558,8 +607,8 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="edit-contact">Contact</label>
-                            <input type="tel" id="edit-contact" pattern="[0-9]{10}">
+                            <label for="edit-contact">Contact *</label>
+                            <input type="tel" id="edit-contact" pattern="[0-9]{10}" required>
                         </div>
                         <div class="form-group">
                             <label for="edit-blood-group">Blood Group</label>

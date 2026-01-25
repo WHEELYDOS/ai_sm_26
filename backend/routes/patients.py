@@ -86,25 +86,46 @@ def create_patient():
         user_id = int(get_jwt_identity())
         data = request.get_json()
         
-        # Validate required fields
-        required_fields = ['first_name', 'last_name', 'age', 'gender']
+        # Get patient type (default to adult)
+        patient_type = data.get('patient_type', 'adult')
+        
+        # Validate required fields based on patient type
+        if patient_type == 'newborn':
+            # Newborns need father/mother name instead of patient name
+            if not data.get('father_name') and not data.get('mother_name'):
+                return jsonify({'error': 'Father name or mother name is required for newborns'}), 400
+            required_fields = ['age', 'gender', 'contact']
+        else:
+            # Adults, children, and pregnant women need first/last name
+            required_fields = ['first_name', 'last_name', 'age', 'gender', 'contact']
+        
         for field in required_fields:
             if not data.get(field):
                 return jsonify({'error': f'{field} is required'}), 400
         
+        # Auto-set pregnancy status for pregnant patient type
+        pregnancy_status = data.get('pregnancy_status', False)
+        if patient_type == 'pregnant':
+            pregnancy_status = True
+        
         # Create patient
+        # Note: Use empty string for names when null to handle legacy NOT NULL constraints
         patient = Patient(
             patient_uid=Patient.generate_uid(),
-            first_name=data['first_name'],
-            last_name=data['last_name'],
+            patient_type=patient_type,
+            first_name=data.get('first_name') or '',
+            last_name=data.get('last_name') or '',
+            father_name=data.get('father_name'),
+            mother_name=data.get('mother_name'),
             age=data['age'],
+            age_unit=data.get('age_unit', 'years'),
             gender=data['gender'],
             contact=data.get('contact'),
             address=data.get('address'),
             height=data.get('height'),
             weight=data.get('weight'),
             blood_group=data.get('blood_group'),
-            pregnancy_status=data.get('pregnancy_status', False),
+            pregnancy_status=pregnancy_status,
             created_by=user_id,
             local_id=data.get('local_id'),
             sync_status='synced'
@@ -182,7 +203,8 @@ def update_patient(patient_id):
         
         # Update fields
         updatable_fields = [
-            'first_name', 'last_name', 'age', 'gender', 'contact', 'address',
+            'patient_type', 'first_name', 'last_name', 'father_name', 'mother_name',
+            'age', 'age_unit', 'gender', 'contact', 'address',
             'height', 'weight', 'blood_group', 'pregnancy_status'
         ]
         

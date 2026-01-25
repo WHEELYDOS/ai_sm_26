@@ -11,12 +11,18 @@ class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     patient_uid = db.Column(db.String(20), unique=True, nullable=False, index=True)
     
+    # Patient Category: adult, child, newborn, pregnant
+    patient_type = db.Column(db.String(20), default='adult')
+    
     # Personal Information
-    first_name = db.Column(db.String(80), nullable=False)
-    last_name = db.Column(db.String(80), nullable=False)
+    first_name = db.Column(db.String(80))  # Nullable for newborns
+    last_name = db.Column(db.String(80))   # Nullable for newborns
+    father_name = db.Column(db.String(160))  # For newborns/children
+    mother_name = db.Column(db.String(160))  # For newborns/children
     age = db.Column(db.Integer, nullable=False)
+    age_unit = db.Column(db.String(10), default='years')  # years, months, days
     gender = db.Column(db.String(20), nullable=False)
-    contact = db.Column(db.String(20))
+    contact = db.Column(db.String(20), nullable=False)
     address = db.Column(db.Text)
     
     # Physical Information
@@ -58,13 +64,33 @@ class Patient(db.Model):
     
     def to_dict(self):
         """Convert to dictionary"""
+        # Generate display name - for newborns use parent names
+        # Check for empty string since we use '' instead of NULL for compatibility
+        if self.patient_type == 'newborn' and not self.first_name.strip() if self.first_name else True:
+            if self.father_name:
+                display_name = f"Baby of {self.father_name}"
+            elif self.mother_name:
+                display_name = f"Baby of {self.mother_name}"
+            else:
+                display_name = "Newborn"
+        else:
+            display_name = f"{self.first_name or ''} {self.last_name or ''}".strip() or 'Unknown'
+        
+        # Format age with unit
+        age_display = f"{self.age} {self.age_unit or 'years'}" if self.age is not None else None
+        
         return {
             'id': self.id,
             'patient_uid': self.patient_uid,
+            'patient_type': self.patient_type or 'adult',
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'full_name': f"{self.first_name or ''} {self.last_name or ''}".strip() or 'Unknown',
+            'father_name': self.father_name,
+            'mother_name': self.mother_name,
+            'full_name': display_name,
             'age': self.age,
+            'age_unit': self.age_unit or 'years',
+            'age_display': age_display,
             'gender': self.gender,
             'contact': self.contact,
             'address': self.address,

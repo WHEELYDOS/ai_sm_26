@@ -46,12 +46,36 @@ if 'role' not in columns:
 else:
     print("✅ Role column already exists")
 
+# Migrate patients table for new category fields
+print("\n📋 Checking patients table for new category fields...")
+cursor.execute("PRAGMA table_info(patients)")
+patient_columns = [col[1] for col in cursor.fetchall()]
+
+new_patient_columns = {
+    'patient_type': "VARCHAR(20) DEFAULT 'adult'",
+    'father_name': "VARCHAR(160)",
+    'mother_name': "VARCHAR(160)",
+    'age_unit': "VARCHAR(10) DEFAULT 'years'"
+}
+
+for col_name, col_def in new_patient_columns.items():
+    if col_name not in patient_columns:
+        print(f"➕ Adding '{col_name}' column to patients table...")
+        cursor.execute(f"ALTER TABLE patients ADD COLUMN {col_name} {col_def}")
+        conn.commit()
+        print(f"✅ Added {col_name} column")
+    else:
+        print(f"✅ {col_name} column already exists")
+
+# Make first_name and last_name nullable for newborns (SQLite doesn't support ALTER COLUMN, so we skip this)
+print("ℹ️  Note: first_name and last_name are now nullable for newborn patients")
+
 # Create or update admin user
 cursor.execute("SELECT id FROM users WHERE username = 'admin'")
 admin = cursor.fetchone()
 
 if not admin:
-    print("➕ Creating admin user...")
+    print("\n➕ Creating admin user...")
     password_hash = generate_password_hash('admin')
     cursor.execute("""
         INSERT INTO users (username, email, password_hash, full_name, role)
@@ -60,7 +84,7 @@ if not admin:
     conn.commit()
     print("✅ Admin user created (username: admin, password: admin)")
 else:
-    print("➕ Updating existing admin user role...")
+    print("\n➕ Updating existing admin user role...")
     cursor.execute("UPDATE users SET role = 'admin' WHERE username = 'admin'")
     conn.commit()
     print("✅ Admin role updated")

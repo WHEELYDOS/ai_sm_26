@@ -214,15 +214,97 @@ const app = {
         const form = document.getElementById('patient-form');
         if (!form) return;
 
-        // Gender change - show pregnancy section
+        // Patient type selection
+        const patientTypeRadios = document.querySelectorAll('input[name="patientType"]');
+        const patientNameRow = document.getElementById('patient-name-row');
+        const parentNameRow = document.getElementById('parent-name-row');
+        const firstNameInput = document.getElementById('first-name');
+        const lastNameInput = document.getElementById('last-name');
+        const fatherNameInput = document.getElementById('father-name');
+        const ageUnitSelect = document.getElementById('age-unit');
         const genderSelect = document.getElementById('gender');
         const pregnancySection = document.getElementById('pregnancy-section');
+
+        const handlePatientTypeChange = (patientType) => {
+            if (patientType === 'newborn') {
+                // Show parent fields, hide patient name fields
+                if (patientNameRow) patientNameRow.style.display = 'none';
+                if (parentNameRow) parentNameRow.style.display = 'grid';
+                if (firstNameInput) firstNameInput.removeAttribute('required');
+                if (lastNameInput) lastNameInput.removeAttribute('required');
+                if (fatherNameInput) fatherNameInput.setAttribute('required', 'required');
+                // Default age unit to days for newborns
+                if (ageUnitSelect) ageUnitSelect.value = 'days';
+                // Hide pregnancy section for newborns
+                if (pregnancySection) pregnancySection.style.display = 'none';
+            } else if (patientType === 'child') {
+                // Show patient name fields, hide parent fields
+                if (patientNameRow) patientNameRow.style.display = 'grid';
+                if (parentNameRow) parentNameRow.style.display = 'none';
+                if (firstNameInput) firstNameInput.setAttribute('required', 'required');
+                if (lastNameInput) lastNameInput.setAttribute('required', 'required');
+                if (fatherNameInput) fatherNameInput.removeAttribute('required');
+                // Default age unit to months for children
+                if (ageUnitSelect) ageUnitSelect.value = 'months';
+                // Hide pregnancy section for children
+                if (pregnancySection) pregnancySection.style.display = 'none';
+            } else if (patientType === 'pregnant') {
+                // Show patient name fields
+                if (patientNameRow) patientNameRow.style.display = 'grid';
+                if (parentNameRow) parentNameRow.style.display = 'none';
+                if (firstNameInput) firstNameInput.setAttribute('required', 'required');
+                if (lastNameInput) lastNameInput.setAttribute('required', 'required');
+                if (fatherNameInput) fatherNameInput.removeAttribute('required');
+                if (ageUnitSelect) ageUnitSelect.value = 'years';
+                // Auto-select female and show pregnancy section
+                if (genderSelect) genderSelect.value = 'female';
+                if (pregnancySection) pregnancySection.style.display = 'block';
+                // For pregnant type: hide checkbox (implied) and show LMP directly
+                const checkboxRow = document.getElementById('pregnancy-checkbox-row');
+                const lmpGroup = document.getElementById('lmp-group');
+                const predictionSection = document.getElementById('prediction-section');
+                if (checkboxRow) checkboxRow.style.display = 'none';
+                if (lmpGroup) lmpGroup.style.display = 'block';
+                if (predictionSection) predictionSection.style.display = 'block';
+            } else {
+                // Adult - show patient name fields
+                if (patientNameRow) patientNameRow.style.display = 'grid';
+                if (parentNameRow) parentNameRow.style.display = 'none';
+                if (firstNameInput) firstNameInput.setAttribute('required', 'required');
+                if (lastNameInput) lastNameInput.setAttribute('required', 'required');
+                if (fatherNameInput) fatherNameInput.removeAttribute('required');
+                if (ageUnitSelect) ageUnitSelect.value = 'years';
+                // Show pregnancy section only for adult females
+                if (pregnancySection) {
+                    pregnancySection.style.display = genderSelect?.value === 'female' ? 'block' : 'none';
+                }
+                // For adult: show checkbox, hide LMP until checked
+                const checkboxRow = document.getElementById('pregnancy-checkbox-row');
+                const lmpGroup = document.getElementById('lmp-group');
+                const predictionSection = document.getElementById('prediction-section');
+                if (checkboxRow) checkboxRow.style.display = 'flex';
+                if (lmpGroup) lmpGroup.style.display = 'none';
+                if (predictionSection) predictionSection.style.display = 'none';
+            }
+        };
+
+        patientTypeRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                handlePatientTypeChange(e.target.value);
+            });
+        });
+
+        // Gender change - show pregnancy section only for adult type
         const pregnancyCheckbox = document.getElementById('pregnancy-status');
         const lmpGroup = document.getElementById('lmp-group');
 
         if (genderSelect && pregnancySection) {
             genderSelect.addEventListener('change', () => {
-                pregnancySection.style.display = genderSelect.value === 'female' ? 'block' : 'none';
+                const patientType = document.querySelector('input[name="patientType"]:checked')?.value;
+                // Only show pregnancy section for adult females (not for child/newborn/pregnant types)
+                if (patientType === 'adult') {
+                    pregnancySection.style.display = genderSelect.value === 'female' ? 'block' : 'none';
+                }
             });
         }
 
@@ -286,6 +368,10 @@ const app = {
             if (pregnancySection) pregnancySection.style.display = 'none';
             if (lmpGroup) lmpGroup.style.display = 'none';
             if (coughDurationGroup) coughDurationGroup.style.display = 'none';
+            // Reset patient type to adult view
+            if (patientNameRow) patientNameRow.style.display = 'grid';
+            if (parentNameRow) parentNameRow.style.display = 'none';
+            if (ageUnitSelect) ageUnitSelect.value = 'years';
             voice.clearTranscript();
         });
     },
@@ -302,16 +388,21 @@ const app = {
             const formData = new FormData(form);
 
             // Create patient
+            const patientType = formData.get('patientType') || 'adult';
             const patientData = {
-                firstName: formData.get('firstName'),
-                lastName: formData.get('lastName'),
+                patientType: patientType,
+                firstName: formData.get('firstName') || null,
+                lastName: formData.get('lastName') || null,
+                fatherName: formData.get('fatherName') || null,
+                motherName: formData.get('motherName') || null,
                 age: parseInt(formData.get('age')),
+                ageUnit: formData.get('ageUnit') || 'years',
                 gender: formData.get('gender'),
                 contact: formData.get('contact'),
                 bloodGroup: formData.get('bloodGroup'),
                 height: parseFloat(formData.get('height')) || null,
                 weight: parseFloat(formData.get('weight')) || null,
-                pregnancyStatus: formData.get('pregnancyStatus') === 'on',
+                pregnancyStatus: patientType === 'pregnant' || formData.get('pregnancyStatus') === 'on',
                 lastMenstrualDate: formData.get('lastMenstrualDate') || null
             };
 
@@ -456,16 +547,40 @@ const app = {
                     riskLevel = alertsModule.getRiskLevel(alerts);
                 }
 
+                // Generate display name for different patient types
+                let displayName;
+                if (patient.patientType === 'newborn' && !patient.firstName) {
+                    if (patient.fatherName) {
+                        displayName = `Baby of ${patient.fatherName}`;
+                    } else if (patient.motherName) {
+                        displayName = `Baby of ${patient.motherName}`;
+                    } else {
+                        displayName = 'Newborn';
+                    }
+                } else {
+                    displayName = `${patient.firstName || ''} ${patient.lastName || ''}`.trim() || 'Unknown';
+                }
+
+                // Age display with unit
+                const ageUnit = patient.ageUnit || 'years';
+                const ageDisplay = `${patient.age} ${ageUnit}`;
+
+                // Patient type badge
+                const typeIcons = { adult: '👤', child: '👶', newborn: '🍼', pregnant: '🤰' };
+                const patientType = patient.patientType || 'adult';
+                const typeIcon = typeIcons[patientType] || '👤';
+
                 html += `
                     <div class="patient-card" data-patient-id="${patient.localId}">
                         <div class="patient-card-header">
-                            <h3>${patient.firstName} ${patient.lastName}</h3>
+                            <h3>${displayName}</h3>
                             <span class="patient-uid">${patient.patientUid || 'Local'}</span>
                         </div>
                         <div class="patient-card-body">
-                            <p>Age: ${patient.age}, ${patient.gender}</p>
+                            <p><span class="patient-type-badge type-${patientType}">${typeIcon} ${patientType}</span></p>
+                            <p>Age: ${ageDisplay}, ${patient.gender}</p>
                             ${patient.contact ? `<p>Tel: ${patient.contact}</p>` : ''}
-                            ${patient.pregnancyStatus ? '<p>Pregnant</p>' : ''}
+                            ${patient.pregnancyStatus && patientType !== 'pregnant' ? '<p>🤰 Pregnant</p>' : ''}
                         </div>
                         <span class="patient-risk-badge risk-${riskLevel}">${riskLevel} risk</span>
                     </div>

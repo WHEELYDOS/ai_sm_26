@@ -1809,3 +1809,117 @@ body {
         padding: var(--spacing-md);
     }
 }
+
+/* ============================================================================
+   PATIENT TYPE SELECTOR
+   ============================================================================ */
+
+.patient-type-selector {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+}
+
+@media (min-width: 600px) {
+    .patient-type-selector {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.type-option {
+    position: relative;
+    cursor: pointer;
+}
+
+.type-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.type-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    transition: var(--transition-fast);
+    text-align: center;
+}
+
+.type-option input[type="radio"]:checked+.type-label {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+}
+
+.type-option:hover .type-label {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Age Input Group */
+.age-input-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.age-input-group input {
+    flex: 1;
+}
+
+.age-unit-select {
+    width: 100px;
+    padding: 12px 10px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    background: var(--bg-primary);
+    cursor: pointer;
+}
+
+.age-unit-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: white;
+}
+
+/* Patient Type Badge */
+.patient-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.patient-type-badge.type-adult {
+    background: var(--info-light);
+    color: var(--info-color);
+}
+
+.patient-type-badge.type-child {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.patient-type-badge.type-newborn {
+    background: #fce4ec;
+    color: #c2185b;
+}
+
+.patient-type-badge.type-pregnant {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
