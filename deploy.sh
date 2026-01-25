@@ -58,7 +58,13 @@ WantedBy=multi-user.target"
 # Write service file with sudo
 echo "$SERVICE_CONTENT" | sudo tee /etc/systemd/system/ashacare.service
 
-# 5. Start Application
+# 5. Run Database Migration
+echo "🔧 Running database migration..."
+if [ -f "migrate.py" ]; then
+    python3 migrate.py
+fi
+
+# 6. Start Application
 echo "🚀 Starting the application..."
 sudo systemctl daemon-reload
 sudo systemctl enable ashacare
