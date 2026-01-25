@@ -64,35 +64,40 @@ class Patient(db.Model):
     
     def to_dict(self):
         """Convert to dictionary"""
+        # Safely get new columns with defaults for backward compatibility
+        patient_type = getattr(self, 'patient_type', None) or 'adult'
+        father_name = getattr(self, 'father_name', None)
+        mother_name = getattr(self, 'mother_name', None)
+        age_unit = getattr(self, 'age_unit', None) or 'years'
+        
         # Generate display name - for newborns use parent names
-        # Check for empty string since we use '' instead of NULL for compatibility
-        is_newborn = self.patient_type == 'newborn'
+        is_newborn = patient_type == 'newborn'
         has_no_name = not self.first_name or (isinstance(self.first_name, str) and not self.first_name.strip())
         
         if is_newborn and has_no_name:
-            if self.father_name:
-                display_name = f"Baby of {self.father_name}"
-            elif self.mother_name:
-                display_name = f"Baby of {self.mother_name}"
+            if father_name:
+                display_name = f"Baby of {father_name}"
+            elif mother_name:
+                display_name = f"Baby of {mother_name}"
             else:
                 display_name = "Newborn"
         else:
             display_name = f"{self.first_name or ''} {self.last_name or ''}".strip() or 'Unknown'
         
         # Format age with unit
-        age_display = f"{self.age} {self.age_unit or 'years'}" if self.age is not None else None
+        age_display = f"{self.age} {age_unit}" if self.age is not None else None
         
         return {
             'id': self.id,
             'patient_uid': self.patient_uid,
-            'patient_type': self.patient_type or 'adult',
+            'patient_type': patient_type,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'father_name': self.father_name,
-            'mother_name': self.mother_name,
+            'father_name': father_name,
+            'mother_name': mother_name,
             'full_name': display_name,
             'age': self.age,
-            'age_unit': self.age_unit or 'years',
+            'age_unit': age_unit,
             'age_display': age_display,
             'gender': self.gender,
             'contact': self.contact,
