@@ -66,7 +66,10 @@ class Patient(db.Model):
         """Convert to dictionary"""
         # Generate display name - for newborns use parent names
         # Check for empty string since we use '' instead of NULL for compatibility
-        if self.patient_type == 'newborn' and not self.first_name.strip() if self.first_name else True:
+        is_newborn = self.patient_type == 'newborn'
+        has_no_name = not self.first_name or (isinstance(self.first_name, str) and not self.first_name.strip())
+        
+        if is_newborn and has_no_name:
             if self.father_name:
                 display_name = f"Baby of {self.father_name}"
             elif self.mother_name:
