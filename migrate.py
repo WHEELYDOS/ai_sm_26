@@ -7,12 +7,27 @@ import sqlite3
 import os
 from werkzeug.security import generate_password_hash
 
-# Find the database
-db_path = os.path.join(os.path.dirname(__file__), 'instance', 'ashacare.db')
+# Try multiple possible database locations
+script_dir = os.path.dirname(os.path.abspath(__file__))
+possible_paths = [
+    os.path.join(script_dir, 'instance', 'ashacare.db'),
+    os.path.join(script_dir, 'backend', 'instance', 'ashacare.db'),
+    '/home/ec2-user/ai_sm/ai_sm_26/instance/ashacare.db',
+    '/home/ec2-user/ai_sm/ai_sm_26/backend/instance/ashacare.db',
+]
 
-if not os.path.exists(db_path):
-    print(f"❌ Database not found at {db_path}")
-    exit(1)
+db_path = None
+for path in possible_paths:
+    if os.path.exists(path):
+        db_path = path
+        break
+
+if not db_path:
+    print(f"❌ Database not found in any of these locations:")
+    for p in possible_paths:
+        print(f"   - {p}")
+    print("\n💡 The database will be created when Flask starts. Restart the service and try again.")
+    exit(0)
 
 print(f"📂 Found database at: {db_path}")
 
