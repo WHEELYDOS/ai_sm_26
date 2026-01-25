@@ -336,6 +336,7 @@
         <div class="auth-tabs">
             <button class="auth-tab active" data-tab="login">Sign In</button>
             <button class="auth-tab" data-tab="register">Register</button>
+            <button class="auth-tab" data-tab="admin">Admin</button>
         </div>
 
         <!-- Login Form -->
@@ -398,6 +399,27 @@
                 Create Account
             </button>
         </form>
+
+        <!-- Admin Login Form -->
+        <form id="admin-form" class="auth-form">
+            <div id="admin-error" class="error-message"></div>
+
+            <div class="form-group">
+                <label for="admin-username">Admin Username</label>
+                <input type="text" id="admin-username" name="username" placeholder="Enter admin username" required
+                    autocomplete="username" value="admin">
+            </div>
+
+            <div class="form-group">
+                <label for="admin-password">Admin Password</label>
+                <input type="password" id="admin-password" name="password" placeholder="Enter admin password" required
+                    autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn-primary" id="admin-btn">
+                Admin Access
+            </button>
+        </form>
     </div>
 
     <script>
@@ -439,8 +461,60 @@
                 loginError.classList.remove('show');
                 registerError.classList.remove('show');
                 registerSuccess.classList.remove('show');
+                const adminErr = document.getElementById('admin-error');
+                if (adminErr) adminErr.classList.remove('show');
             });
         });
+
+        // Admin form submission
+        const adminForm = document.getElementById('admin-form');
+        const adminError = document.getElementById('admin-error');
+        if (adminForm) {
+            adminForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('admin-username').value.trim();
+                const password = document.getElementById('admin-password').value;
+                const submitBtn = document.getElementById('admin-btn');
+
+                adminError.classList.remove('show');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="loading"></span>Verifying...';
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Check if admin
+                        if (data.user.role !== 'admin') {
+                            adminError.textContent = 'Access Denied: Not an Admin account';
+                            adminError.classList.add('show');
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = 'Admin Access';
+                            return;
+                        }
+
+                        localStorage.setItem('ashacare_token', data.access_token);
+                        localStorage.setItem('ashacare_user', JSON.stringify(data.user));
+                        window.location.href = '/admin';
+                    } else {
+                        adminError.textContent = data.error || 'Login failed';
+                        adminError.classList.add('show');
+                    }
+                } catch (error) {
+                    console.error('Admin login error:', error);
+                    adminError.textContent = 'Connection error';
+                    adminError.classList.add('show');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Admin Access';
+                }
+            });
+        }
 
         // Login form submission
         loginForm.addEventListener('submit', async (e) => {

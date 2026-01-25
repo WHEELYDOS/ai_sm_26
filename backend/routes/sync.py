@@ -39,18 +39,18 @@ def sync_data():
                     existing.sync_status = 'synced'
                     results['patients']['updated'] += 1
                 else:
-                    # Create new
+                    # Create new - accept both camelCase and snake_case
                     patient = Patient(
                         patient_uid=Patient.generate_uid(),
-                        first_name=patient_data.get('first_name', ''),
-                        last_name=patient_data.get('last_name', ''),
+                        first_name=patient_data.get('first_name') or patient_data.get('firstName', ''),
+                        last_name=patient_data.get('last_name') or patient_data.get('lastName', ''),
                         age=patient_data.get('age', 0),
                         gender=patient_data.get('gender', 'other'),
                         contact=patient_data.get('contact'),
                         height=patient_data.get('height'),
                         weight=patient_data.get('weight'),
-                        blood_group=patient_data.get('blood_group'),
-                        pregnancy_status=patient_data.get('pregnancy_status', False),
+                        blood_group=patient_data.get('blood_group') or patient_data.get('bloodGroup'),
+                        pregnancy_status=patient_data.get('pregnancy_status') or patient_data.get('pregnancyStatus', False),
                         created_by=user_id,
                         local_id=local_id,
                         sync_status='synced'
@@ -96,18 +96,18 @@ def sync_data():
                     existing.sync_status = 'synced'
                     results['records']['updated'] += 1
                 else:
-                    # Create new
+                    # Create new - accept both camelCase and snake_case
                     record = MedicalRecord(
                         patient_id=patient.id,
-                        bp_systolic=record_data.get('bp_systolic'),
-                        bp_diastolic=record_data.get('bp_diastolic'),
-                        heart_rate=record_data.get('heart_rate'),
+                        bp_systolic=record_data.get('bp_systolic') or record_data.get('bpSystolic'),
+                        bp_diastolic=record_data.get('bp_diastolic') or record_data.get('bpDiastolic'),
+                        heart_rate=record_data.get('heart_rate') or record_data.get('heartRate'),
                         temperature=record_data.get('temperature'),
-                        blood_sugar=record_data.get('blood_sugar'),
+                        blood_sugar=record_data.get('blood_sugar') or record_data.get('bloodSugar'),
                         hemoglobin=record_data.get('hemoglobin'),
                         fever=record_data.get('fever', False),
                         cough=record_data.get('cough', False),
-                        cough_duration=record_data.get('cough_duration'),
+                        cough_duration=record_data.get('cough_duration') or record_data.get('coughDuration'),
                         diagnosis=record_data.get('diagnosis'),
                         notes=record_data.get('notes'),
                         local_id=local_id,
@@ -155,13 +155,14 @@ def sync_data():
                     existing.sync_status = 'synced'
                     results['reminders']['updated'] += 1
                 else:
-                    # Create new
+                    # Create new - accept both camelCase and snake_case
+                    due_date_str = reminder_data.get('due_date') or reminder_data.get('dueDate')
                     reminder = Reminder(
                         patient_id=patient.id,
-                        reminder_type=reminder_data.get('reminder_type', 'follow_up'),
+                        reminder_type=reminder_data.get('reminder_type') or reminder_data.get('reminderType', 'follow_up'),
                         title=reminder_data.get('title', 'Reminder'),
                         description=reminder_data.get('description'),
-                        due_date=datetime.strptime(reminder_data['due_date'], '%Y-%m-%d').date() if reminder_data.get('due_date') else None,
+                        due_date=datetime.strptime(due_date_str, '%Y-%m-%d').date() if due_date_str else None,
                         priority=reminder_data.get('priority', 'normal'),
                         local_id=local_id,
                         sync_status='synced',

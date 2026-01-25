@@ -13,6 +13,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(256), nullable=False)
     full_name = db.Column(db.String(120))
+    role = db.Column(db.String(20), default='asha')  # 'admin' or 'asha'
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -34,5 +35,6 @@ class User(db.Model):
             'email': self.email,
             'username': self.username,
             'full_name': self.full_name,
+            'role': self.role,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }

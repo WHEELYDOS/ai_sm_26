@@ -63,7 +63,7 @@ class Patient(db.Model):
             'patient_uid': self.patient_uid,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'full_name': f"{self.first_name} {self.last_name}",
+            'full_name': f"{self.first_name or ''} {self.last_name or ''}".strip() or 'Unknown',
             'age': self.age,
             'gender': self.gender,
             'contact': self.contact,

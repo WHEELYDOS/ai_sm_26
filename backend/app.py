@@ -56,6 +56,7 @@ def create_app(config_name='default'):
     from routes.reminders import reminders_bp
     from routes.sync import sync_bp
     from routes.prediction import prediction_bp
+    from routes.admin import admin_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(patients_bp)
@@ -63,6 +64,7 @@ def create_app(config_name='default'):
     app.register_blueprint(reminders_bp)
     app.register_blueprint(sync_bp)
     app.register_blueprint(prediction_bp)
+    app.register_blueprint(admin_bp)
     
     # Serve frontend files
     frontend_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
@@ -74,6 +76,10 @@ def create_app(config_name='default'):
     @app.route('/app')
     def serve_app():
         return send_from_directory(frontend_folder, 'index.html')
+    
+    @app.route('/admin')
+    def serve_admin():
+        return send_from_directory(frontend_folder, 'admin.html')
     
     @app.route('/<path:filename>')
     def serve_static(filename):

@@ -604,6 +604,104 @@ const app = {
                 document.querySelector('[data-tab="form"]').click();
             });
         }
+
+        // Edit patient button
+        const editPatientBtn = document.getElementById('edit-patient-btn');
+        if (editPatientBtn) {
+            editPatientBtn.addEventListener('click', () => {
+                if (this.selectedPatient) {
+                    this.openEditPatientModal(this.selectedPatient);
+                }
+            });
+        }
+
+        // Edit patient form submission
+        const editPatientForm = document.getElementById('edit-patient-form');
+        if (editPatientForm) {
+            editPatientForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await this.savePatientEdit();
+            });
+        }
+    },
+
+    /**
+     * Open edit patient modal
+     */
+    openEditPatientModal(patient) {
+        document.getElementById('patient-modal').classList.remove('show');
+
+        document.getElementById('edit-patient-id').value = patient.localId || patient.id;
+        document.getElementById('edit-first-name').value = patient.firstName || '';
+        document.getElementById('edit-last-name').value = patient.lastName || '';
+        document.getElementById('edit-age').value = patient.age || '';
+        document.getElementById('edit-gender').value = patient.gender || 'other';
+        document.getElementById('edit-contact').value = patient.contact || '';
+        document.getElementById('edit-blood-group').value = patient.bloodGroup || '';
+        document.getElementById('edit-height').value = patient.height || '';
+        document.getElementById('edit-weight').value = patient.weight || '';
+
+        document.getElementById('edit-patient-modal').classList.add('show');
+    },
+
+    /**
+     * Save patient edit
+     */
+    async savePatientEdit() {
+        const saveBtn = document.getElementById('save-edit-patient-btn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+
+        try {
+            const patientId = parseInt(document.getElementById('edit-patient-id').value);
+            const updatedData = {
+                firstName: document.getElementById('edit-first-name').value,
+                lastName: document.getElementById('edit-last-name').value,
+                age: parseInt(document.getElementById('edit-age').value),
+                gender: document.getElementById('edit-gender').value,
+                contact: document.getElementById('edit-contact').value,
+                bloodGroup: document.getElementById('edit-blood-group').value,
+                height: parseFloat(document.getElementById('edit-height').value) || null,
+                weight: parseFloat(document.getElementById('edit-weight').value) || null
+            };
+
+            // Update in local IndexedDB
+            await db.updatePatient(patientId, updatedData);
+
+            // Also update on server if online
+            if (navigator.onLine && this.selectedPatient?.id) {
+                try {
+                    await auth.apiRequest(`/api/patients/${this.selectedPatient.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            first_name: updatedData.firstName,
+                            last_name: updatedData.lastName,
+                            age: updatedData.age,
+                            gender: updatedData.gender,
+                            contact: updatedData.contact,
+                            blood_group: updatedData.bloodGroup,
+                            height: updatedData.height,
+                            weight: updatedData.weight
+                        })
+                    });
+                } catch (e) {
+                    console.warn('Server update failed, will sync later:', e);
+                }
+            }
+
+            alert('Patient updated successfully!');
+            document.getElementById('edit-patient-modal').classList.remove('show');
+
+            // Refresh patient list
+            await this.loadPatientsList();
+
+        } catch (error) {
+            console.error('Error saving patient:', error);
+            alert('Failed to save patient. Please try again.');
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Changes';
+        }
     },
 
     /**

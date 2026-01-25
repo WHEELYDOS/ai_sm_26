@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AshaCare Admin Dashboard">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>AshaCare - Admin Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Professional Soft Mint Theme - matching main app */
+            --bg-primary: #E0F4E7;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-glass: rgba(224, 244, 231, 0.6);
+            --border-color: #67CE9E;
+            --text-primary: #124170;
+            --text-secondary: #4a5568;
+            --accent-primary: #20667F;
+            --accent-secondary: #124170;
+            --accent-gradient: linear-gradient(135deg, #20667F 0%, #124170 100%);
+            --success: #2e7d32;
+            --warning: #ed6c02;
+            --danger: #d32f2f;
+            --teal: #20667F;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 0% 0%, rgba(103, 206, 158, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(32, 102, 127, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Layout */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 2px solid var(--border-color);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(18, 65, 112, 0.1);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px 24px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(32, 102, 127, 0.3);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .sidebar-footer {
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-glass);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            color: var(--danger);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 32px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(18, 65, 112, 0.08);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(32, 102, 127, 0.15);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon.users {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-icon.patients {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .stat-icon.admins {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .stat-icon.asha {
+            background: rgba(32, 102, 127, 0.2);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Data Table */
+        .table-container {
+            background: white;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(18, 65, 112, 0.08);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 16px;
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            width: 200px;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 16px 24px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: var(--bg-glass);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s ease;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--bg-glass);
+        }
+
+        .data-table td {
+            font-size: 14px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .role-badge.admin {
+            background: rgba(102, 126, 234, 0.2);
+            color: var(--accent-primary);
+        }
+
+        .role-badge.asha {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn.edit {
+            background: rgba(102, 126, 234, 0.2);
+            color: var(--accent-primary);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .action-btn.view {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .action-btn.view:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Pagination */
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .pagination {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pagination-btn {
+            padding: 8px 16px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(18, 65, 112, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-glass);
+            border: none;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(32, 102, 127, 0.15);
+        }
+
+        .form-group select option {
+            background: white;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(32, 102, 127, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 2000;
+        }
+
+        .toast {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            min-width: 280px;
+            box-shadow: 0 4px 15px rgba(18, 65, 112, 0.1);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast-container" id="toast-container"></div>
+
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">✚</div>
+                <span class="sidebar-title">AshaCare</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-section="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-section="users">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </div>
+                <div class="nav-item" data-section="patients">
+                    <span class="nav-icon">🏥</span>
+                    <span>Patients</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name" id="user-name">Admin</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Welcome back! Here's an overview of your system.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon users">👥</div>
+                        <div class="stat-value" id="stat-users">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon patients">🏥</div>
+                        <div class="stat-value" id="stat-patients">0</div>
+                        <div class="stat-label">Total Patients</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon admins">👑</div>
+                        <div class="stat-value" id="stat-admins">0</div>
+                        <div class="stat-label">Admins</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon asha">💚</div>
+                        <div class="stat-value" id="stat-asha">0</div>
+                        <div class="stat-label">ASHA Workers</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users-section" class="content-section">
+                <div class="page-header">
+                    <h1 class="page-title">User Management</h1>
+                    <p class="page-subtitle">Manage all registered users in the system.</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">All Users</h3>
+                        <div class="search-box">
+                            <span>🔍</span>
+                            <input type="text" id="users-search" placeholder="Search users..." onkeyup="searchUsers()">
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Full Name</th>
+                                <th>Role</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                    <div class="table-footer">
+                        <div class="pagination-info" id="users-pagination-info">Showing 0 of 0</div>
+                        <div class="pagination">
+                            <button class="pagination-btn" id="users-prev"
+                                onclick="loadUsers(usersCurrentPage - 1)">Previous</button>
+                            <button class="pagination-btn" id="users-next"
+                                onclick="loadUsers(usersCurrentPage + 1)">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Patients Section -->
+            <section id="patients-section" class="content-section">
+                <div class="page-header">
+                    <h1 class="page-title">Patient Management</h1>
+                    <p class="page-subtitle">View and manage all patient records across users.</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">All Patients</h3>
+                        <div class="search-box">
+                            <span>🔍</span>
+                            <input type="text" id="patients-search" placeholder="Search patients..."
+                                onkeyup="searchPatients()">
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Patient UID</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Contact</th>
+                                <th>Created By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patients-table-body">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                    <div class="table-footer">
+                        <div class="pagination-info" id="patients-pagination-info">Showing 0 of 0</div>
+                        <div class="pagination">
+                            <button class="pagination-btn" id="patients-prev"
+                                onclick="loadPatients(patientsCurrentPage - 1)">Previous</button>
+                            <button class="pagination-btn" id="patients-next"
+                                onclick="loadPatients(patientsCurrentPage + 1)">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal-overlay" id="edit-user-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit User</h3>
+                <button class="modal-close" onclick="closeModal('edit-user-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-user-id">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="edit-user-fullname" placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="edit-user-email" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="edit-user-role">
+                        <option value="asha">ASHA Worker</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('edit-user-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveUser()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Patient Modal -->
+    <div class="modal-overlay" id="edit-patient-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Patient</h3>
+                <button class="modal-close" onclick="closeModal('edit-patient-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-patient-id">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="edit-patient-firstname" placeholder="First name">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="edit-patient-lastname" placeholder="Last name">
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" id="edit-patient-age" placeholder="Age">
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select id="edit-patient-gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="text" id="edit-patient-contact" placeholder="Contact number">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" id="edit-patient-address" placeholder="Address">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('edit-patient-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="savePatient()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Delete</h3>
+                <button class="modal-close" onclick="closeModal('delete-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="delete-message">Are you sure you want to delete this item? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('delete-modal')">Cancel</button>
+                <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE = window.location.origin;
+        let token = localStorage.getItem('ashacare_token');
+        let currentUser = JSON.parse(localStorage.getItem('ashacare_user') || '{}');
+
+        // Pagination state
+        let usersCurrentPage = 1;
+        let usersTotalPages = 1;
+        let patientsCurrentPage = 1;
+        let patientsTotalPages = 1;
+
+        // Search debounce
+        let usersSearchTimeout, patientsSearchTimeout;
+
+        // Check authentication
+        if (!token) {
+            window.location.href = '/';
+        }
+
+        // Check if user is admin
+        if (currentUser.role !== 'admin') {
+            alert('Access denied. Admin privileges required.');
+            window.location.href = '/app';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserInfo();
+            loadStats();
+            loadUsers();
+            loadPatients();
+            setupNavigation();
+        });
+
+        // API Helper
+        async function apiRequest(endpoint, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+            if (data) options.body = JSON.stringify(data);
+
+            const response = await fetch(`${API_BASE}${endpoint}`, options);
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Request failed');
+            }
+
+            return result;
+        }
+
+        // Load user info
+        function loadUserInfo() {
+            document.getElementById('user-name').textContent = currentUser.full_name || currentUser.username || 'Admin';
+            document.getElementById('user-avatar').textContent = (currentUser.full_name || currentUser.username || 'A').charAt(0).toUpperCase();
+        }
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const stats = await apiRequest('/api/admin/stats');
+                document.getElementById('stat-users').textContent = stats.total_users;
+                document.getElementById('stat-patients').textContent = stats.total_patients;
+                document.getElementById('stat-admins').textContent = stats.admin_count;
+                document.getElementById('stat-asha').textContent = stats.asha_count;
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+                showToast('Failed to load statistics', 'error');
+            }
+        }
+
+        // Load users
+        async function loadUsers(page = 1) {
+            const tbody = document.getElementById('users-table-body');
+            const search = document.getElementById('users-search').value;
+
+            tbody.innerHTML = '<tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr>';
+
+            try {
+                const data = await apiRequest(`/api/admin/users?page=${page}&per_page=10&search=${encodeURIComponent(search)}`);
+
+                usersCurrentPage = page;
+                usersTotalPages = data.pages;
+
+                if (data.users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">👥</div><p>No users found</p></div></td></tr>';
+                } else {
+                    tbody.innerHTML = data.users.map(user => `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td>${user.email}</td>
+                            <td>${user.full_name || '-'}</td>
+                            <td><span class="role-badge ${user.role}">${user.role}</span></td>
+                            <td>${formatDate(user.created_at)}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="action-btn edit" onclick="editUser(${user.id})" title="Edit">✏️</button>
+                                    <button class="action-btn delete" onclick="confirmDeleteUser(${user.id})" title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                updatePagination('users', data.total, page, data.pages);
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Failed to load users</p></div></td></tr>';
+            }
+        }
+
+        // Load patients
+        async function loadPatients(page = 1) {
+            const tbody = document.getElementById('patients-table-body');
+            const search = document.getElementById('patients-search').value;
+
+            tbody.innerHTML = '<tr><td colspan="8"><div class="loading"><div class="spinner"></div></div></td></tr>';
+
+            try {
+                const data = await apiRequest(`/api/admin/patients?page=${page}&per_page=10&search=${encodeURIComponent(search)}`);
+
+                patientsCurrentPage = page;
+                patientsTotalPages = data.pages;
+
+                if (data.patients.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">🏥</div><p>No patients found</p></div></td></tr>';
+                } else {
+                    tbody.innerHTML = data.patients.map(patient => `
+                        <tr>
+                            <td>${patient.id}</td>
+                            <td>${patient.patient_uid}</td>
+                            <td>${patient.full_name}</td>
+                            <td>${patient.age}</td>
+                            <td>${patient.gender}</td>
+                            <td>${patient.contact || '-'}</td>
+                            <td>${patient.created_by_name}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="action-btn edit" onclick="editPatient(${patient.id})" title="Edit">✏️</button>
+                                    <button class="action-btn delete" onclick="confirmDeletePatient(${patient.id})" title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                updatePagination('patients', data.total, page, data.pages);
+            } catch (error) {
+                console.error('Failed to load patients:', error);
+                tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Failed to load patients</p></div></td></tr>';
+            }
+        }
+
+        // Update pagination UI
+        function updatePagination(type, total, current, pages) {
+            const info = document.getElementById(`${type}-pagination-info`);
+            const prev = document.getElementById(`${type}-prev`);
+            const next = document.getElementById(`${type}-next`);
+
+            const perPage = 10;
+            const start = (current - 1) * perPage + 1;
+            const end = Math.min(current * perPage, total);
+
+            info.textContent = total > 0 ? `Showing ${start}-${end} of ${total}` : 'Showing 0 of 0';
+            prev.disabled = current <= 1;
+            next.disabled = current >= pages;
+        }
+
+        // Search handlers with debounce
+        function searchUsers() {
+            clearTimeout(usersSearchTimeout);
+            usersSearchTimeout = setTimeout(() => loadUsers(1), 300);
+        }
+
+        function searchPatients() {
+            clearTimeout(patientsSearchTimeout);
+            patientsSearchTimeout = setTimeout(() => loadPatients(1), 300);
+        }
+
+        // Setup navigation
+        function setupNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const section = item.dataset.section;
+
+                    // Update nav state
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+
+                    // Update content state
+                    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                    document.getElementById(`${section}-section`).classList.add('active');
+                });
+            });
+        }
+
+        // Edit user
+        async function editUser(userId) {
+            try {
+                const data = await apiRequest(`/api/admin/users/${userId}`);
+                const user = data.user;
+
+                document.getElementById('edit-user-id').value = user.id;
+                document.getElementById('edit-user-fullname').value = user.full_name || '';
+                document.getElementById('edit-user-email').value = user.email;
+                document.getElementById('edit-user-role').value = user.role;
+
+                openModal('edit-user-modal');
+            } catch (error) {
+                showToast('Failed to load user details', 'error');
+            }
+        }
+
+        // Save user
+        async function saveUser() {
+            const userId = document.getElementById('edit-user-id').value;
+            const data = {
+                full_name: document.getElementById('edit-user-fullname').value,
+                email: document.getElementById('edit-user-email').value,
+                role: document.getElementById('edit-user-role').value
+            };
+
+            try {
+                await apiRequest(`/api/admin/users/${userId}`, 'PUT', data);
+                showToast('User updated successfully', 'success');
+                closeModal('edit-user-modal');
+                loadUsers(usersCurrentPage);
+                loadStats();
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        // Confirm delete user
+        function confirmDeleteUser(userId) {
+            document.getElementById('delete-message').textContent = 'Are you sure you want to delete this user? All their patients will also be deleted. This action cannot be undone.';
+            document.getElementById('confirm-delete-btn').onclick = () => deleteUser(userId);
+            openModal('delete-modal');
+        }
+
+        // Delete user
+        async function deleteUser(userId) {
+            try {
+                await apiRequest(`/api/admin/users/${userId}`, 'DELETE');
+                showToast('User deleted successfully', 'success');
+                closeModal('delete-modal');
+                loadUsers(usersCurrentPage);
+                loadStats();
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        // Edit patient
+        async function editPatient(patientId) {
+            try {
+                const data = await apiRequest(`/api/admin/patients/${patientId}`);
+                const patient = data.patient;
+
+                document.getElementById('edit-patient-id').value = patient.id;
+                document.getElementById('edit-patient-firstname').value = patient.first_name;
+                document.getElementById('edit-patient-lastname').value = patient.last_name;
+                document.getElementById('edit-patient-age').value = patient.age;
+                document.getElementById('edit-patient-gender').value = patient.gender;
+                document.getElementById('edit-patient-contact').value = patient.contact || '';
+                document.getElementById('edit-patient-address').value = patient.address || '';
+
+                openModal('edit-patient-modal');
+            } catch (error) {
+                showToast('Failed to load patient details', 'error');
+            }
+        }
+
+        // Save patient
+        async function savePatient() {
+            const patientId = document.getElementById('edit-patient-id').value;
+            const data = {
+                first_name: document.getElementById('edit-patient-firstname').value,
+                last_name: document.getElementById('edit-patient-lastname').value,
+                age: parseInt(document.getElementById('edit-patient-age').value),
+                gender: document.getElementById('edit-patient-gender').value,
+                contact: document.getElementById('edit-patient-contact').value,
+                address: document.getElementById('edit-patient-address').value
+            };
+
+            try {
+                await apiRequest(`/api/admin/patients/${patientId}`, 'PUT', data);
+                showToast('Patient updated successfully', 'success');
+                closeModal('edit-patient-modal');
+                loadPatients(patientsCurrentPage);
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        // Confirm delete patient
+        function confirmDeletePatient(patientId) {
+            document.getElementById('delete-message').textContent = 'Are you sure you want to delete this patient? All their medical records will also be deleted. This action cannot be undone.';
+            document.getElementById('confirm-delete-btn').onclick = () => deletePatient(patientId);
+            openModal('delete-modal');
+        }
+
+        // Delete patient
+        async function deletePatient(patientId) {
+            try {
+                await apiRequest(`/api/admin/patients/${patientId}`, 'DELETE');
+                showToast('Patient deleted successfully', 'success');
+                closeModal('delete-modal');
+                loadPatients(patientsCurrentPage);
+                loadStats();
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        // Modal helpers
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✓' : '⚠'}</span><span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('ashacare_token');
+            localStorage.removeItem('ashacare_user');
+            window.location.href = '/';
+        }
+    </script>
+</body>
+
+</html>
